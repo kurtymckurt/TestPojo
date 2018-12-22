@@ -2,6 +2,8 @@ package org.kurtymckurt.TestPojoData.pojo;
 
 import lombok.Data;
 
+import java.util.Collection;
+
 @Data
 public class TestPojo {
 
@@ -12,6 +14,7 @@ public class TestPojo {
     //Test arrays
     private int[] somethingElse;
 
+    private Collection<Integer> integers;
     //Test Custom pojo
     private SecondPojo secondPojo;
 
