@@ -1,6 +1,7 @@
 package org.kurtymckurt.TestPojoData;
 
 import org.junit.jupiter.api.Test;
+import org.kurtymckurt.TestPojoData.pojo.Person;
 import org.kurtymckurt.TestPojoData.pojo.TestPojo;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,5 +25,10 @@ public class TestPojoDataTest {
 
     }
 
+    @Test
+    public void realisticTest() {
+        Person person = TestPojoData.builder(Person.class).build();
+        System.out.println(person);
+    }
 
 }
