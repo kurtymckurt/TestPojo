@@ -25,7 +25,7 @@ public enum Gender {
 
 @Test
 public void testPojos {
-    Person person = TestPojoData.
+    Person person = TestPojoData.builder(Person.class).build();
 }
 ```
 
