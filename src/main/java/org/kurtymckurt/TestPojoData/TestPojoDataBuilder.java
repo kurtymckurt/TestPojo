@@ -24,9 +24,9 @@ public class TestPojoDataBuilder<T> {
     @SuppressWarnings(value="yeah, suppress this for now")
     public T build() {
         return (T) new PojoBuilder(
-                PojoBuilderDescriptor.builder()
+                PojoBuilderConfiguration.builder()
                         .clazz(clazz)
-                        .customGeneratorList(customGenerators)
+                        .generators(customGenerators)
                         .build())
                 .buildObject();
     }

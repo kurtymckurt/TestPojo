@@ -19,11 +19,11 @@ public class PojoBuilder {
     private final List<Generator> generators;
     private final Class<?> clazz;
 
-    public PojoBuilder(PojoBuilderDescriptor descriptor) {
-        clazz = descriptor.getClazz();
+    public PojoBuilder(PojoBuilderConfiguration configuration) {
+        clazz = configuration.getClazz();
         generators = new ArrayList<>();
         addCoreGenerators();
-        generators.addAll(descriptor.getCustomGeneratorList());
+        generators.addAll(configuration.getGenerators());
     }
 
     private void addCoreGenerators() {
@@ -36,13 +36,25 @@ public class PojoBuilder {
         generators.add(new StringGenerator());
         generators.add(new ShortGenerator());
         generators.add(new CharacterGenerator());
+        generators.add(new DateGenerator());
+        generators.add(new CollectionGenerator());
+        generators.add(new SetGenerator());
+        generators.add(new ListGenerator());
     }
 
     public Object buildObject() {
         return buildObject(clazz);
     }
 
-    public Object buildObject(Class<?> clazz) {
+    private Object buildObject(Class<?> clazz) {
+        //First see if the object is just one we can generate from
+        //our generators.
+        for(Generator generator : generators) {
+            if(generator.supportsType(clazz)){
+                return generator.generate(clazz, null);
+            }
+        }
+
         log.debug("[*] creating object {}.", clazz);
         Object instance = null;
         try {
@@ -51,9 +63,9 @@ public class PojoBuilder {
             log.debug("[*] attempting to fill the object {}.", instance);
             instance = fillInstanceVariables(instance);
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            log.debug("Problems instantiating the object", e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.debug("Problems accessing properties on the object", e);
         }
 
         log.debug("[*] completed object: {}", instance);
@@ -108,7 +120,7 @@ public class PojoBuilder {
                 for(Generator generator : generators) {
                     if(generator.supportsType(type)) {
                         generated = true;
-                        f.set(instance, generator.generate());
+                        f.set(instance, generator.generate(type, f));
                     }
                 }
 
@@ -127,6 +139,8 @@ public class PojoBuilder {
         Object arr = Array.newInstance(type, size);
 
         for(int i = 0; i < size; i++) {
+
+            //Primitives
             if (type.isAssignableFrom(Integer.TYPE)) {
                 Array.setInt(arr, i, RandomUtils.getRandomInt());
             } else if (type.isAssignableFrom(Double.TYPE)) {
@@ -148,7 +162,7 @@ public class PojoBuilder {
                 for(Generator generator : generators) {
                     if(generator.supportsType(type)) {
                         generated = true;
-                        Array.set(arr, i, generator.generate());
+                        Array.set(arr, i, generator.generate(type, null));
                     }
                 }
 

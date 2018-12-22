@@ -16,6 +16,7 @@ public class TestPojoDataTest {
         assertNotNull(testPojo.getName());
         assertNotNull(testPojo.getAddress());
 
+        //Test objects
         assertNotNull(testPojo.getBooleanObjectValue());
         assertNotNull(testPojo.getByteObjectValue());
         assertNotNull(testPojo.getDoubleObjectValue());
@@ -28,7 +29,10 @@ public class TestPojoDataTest {
     @Test
     public void realisticTest() {
         Person person = TestPojoData.builder(Person.class).build();
-        System.out.println(person);
+        assertNotNull(person.getGender());
+        assertNotNull(person.getName());
+        assertNotNull(person.getBirthDate());
+        assertNotNull(person.getAddress());
     }
 
 }

@@ -3,6 +3,8 @@ package org.kurtymckurt.TestPojoData.pojo;
 import lombok.Data;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Data
 public class TestPojo {
@@ -14,9 +16,12 @@ public class TestPojo {
     //Test arrays
     private int[] somethingElse;
 
-    private Collection<Integer> integers;
+    private List<Integer> integers;
+    private Set<Long> longs;
+    private Collection<AnotherPojo> collectionOfPojos;
+
     //Test Custom pojo
-    private SecondPojo secondPojo;
+    private AnotherPojo anotherPojo;
 
     //Test primitives
     private short shortValue;
