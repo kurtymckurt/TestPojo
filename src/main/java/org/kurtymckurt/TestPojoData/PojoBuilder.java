@@ -3,6 +3,7 @@ package org.kurtymckurt.TestPojoData;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kurtymckurt.TestPojoData.generators.*;
+import org.kurtymckurt.TestPojoData.providers.Provider;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Array;
@@ -17,11 +18,13 @@ import java.util.List;
 public class PojoBuilder {
 
     private final List<Generator> generators;
+    private final List<Provider> providers;
     private final Class<?> clazz;
 
     public PojoBuilder(PojoBuilderConfiguration configuration) {
         clazz = configuration.getClazz();
         generators = new ArrayList<>();
+        providers = new ArrayList<>(configuration.getProviders());
         addCoreGenerators();
         generators.addAll(configuration.getGenerators());
     }
@@ -57,8 +60,21 @@ public class PojoBuilder {
 
         log.debug("[*] creating object {}.", clazz);
         Object instance = null;
+
         try {
-            instance = clazz.newInstance();
+            //Check providers to see if we have something to generate this
+            //bad boy for us.
+            for(Provider provider : providers) {
+                if(provider.supportsType(clazz)) {
+                    instance = provider.provide();
+                }
+            }
+            //If we didn't find a provider, try to new it up ourselves
+            //this requires a no arg constructor...
+            if(instance == null) {
+                instance = clazz.newInstance();
+            }
+
             log.debug("[*] created object {}.", instance);
             log.debug("[*] attempting to fill the object {}.", instance);
             instance = fillInstanceVariables(instance);
