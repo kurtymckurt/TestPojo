@@ -1,13 +1,10 @@
 package org.kurtymckurt.TestPojoData;
 
 import org.junit.jupiter.api.Test;
-import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.pojo.ImmutablePojo;
 import org.kurtymckurt.TestPojoData.pojo.Person;
 import org.kurtymckurt.TestPojoData.pojo.TestPojo;
 import org.kurtymckurt.TestPojoData.providers.Provider;
-
-import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;

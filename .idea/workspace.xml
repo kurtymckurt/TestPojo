@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="adbc4a99-6f35-485a-a2e7-ba6389f67d8f" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/providers/Provider.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/ImmutablePojo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/PojoBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/PojoBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/PojoBuilderConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/PojoBuilderConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/TestPojoDataBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/TestPojoDataBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -26,11 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/PojoBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="57" column="13" lean-forward="true" selection-start-line="57" selection-start-column="13" selection-end-line="57" selection-end-column="13" />
+            <state relative-caret-position="32">
+              <caret line="54" selection-start-line="54" selection-end-line="54" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1225#1226#0" expanded="true" />
@@ -87,24 +82,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/generators/SetGenerator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
-              <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#329#330#0" expanded="true" />
-                <element signature="e#356#357#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="111">
-              <caret line="45" column="81" lean-forward="true" selection-start-line="45" selection-start-column="81" selection-end-line="45" selection-end-column="81" />
+            <state relative-caret-position="349">
+              <caret line="22" column="27" lean-forward="true" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2135#2136#0" expanded="true" />
@@ -114,20 +95,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/generators/Generator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="319">
-              <caret line="11" column="1" lean-forward="true" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="541">
+                <caret line="20" column="30" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="30" />
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/TestPojo.java">
+        <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/Person.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="257">
-              <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
+            <state relative-caret-position="319">
+              <caret line="11" column="14" lean-forward="true" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -136,10 +120,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/ImmutablePojo.java">
+        <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/Gender.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
+            <state relative-caret-position="58">
+              <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/TestPojo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="192">
+              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -195,7 +188,6 @@
         <option value="$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/SecondPojo.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/Gender.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/Sex.java" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/Generator.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/generators/IntegerGenerator.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/generators/DoubleGenerator.java" />
@@ -224,8 +216,9 @@
         <option value="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/providers/Provider.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/PojoBuilderConfiguration.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/PojoBuilder.java" />
-        <option value="$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/TestPojoDataBuilder.java" />
+        <option value="$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -324,7 +317,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1545521903113" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1545522346066" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
@@ -351,7 +344,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestPojoDataTest.testImmutableObjectWithBuilder">
+  <component name="RunManager" selected="JUnit.TestPojoDataTest.testBasicPojo (1)">
     <configuration default="true" type="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -474,11 +467,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.TestPojoDataTest.testBasicPojo (1)" />
+        <item itemvalue="JUnit.TestPojoDataTest.realisticTest" />
         <item itemvalue="JUnit.TestPojoDataTest.testImmutableObjectWithBuilder" />
         <item itemvalue="JUnit.TestPojoDataTest.testImmutibleObjectWithBuilder" />
-        <item itemvalue="JUnit.TestPojoDataTest.testBasicPojo (1)" />
         <item itemvalue="JUnit.TestPojoDataTest.testBasicPojo" />
-        <item itemvalue="JUnit.TestPojoDataTest.realisticTest" />
       </list>
     </recent_temporary>
   </component>
@@ -496,23 +489,11 @@
       <workItem from="1545494616572" duration="73000" />
       <workItem from="1545496126712" duration="2374000" />
       <workItem from="1545499113168" duration="85000" />
-      <workItem from="1545499220668" duration="18761000" />
+      <workItem from="1545499220668" duration="19198000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestPojoDataTest_testBasicPojo - 2018.12.22 at 16h 45m 32s.xml">
-      <configuration name="TestPojoDataTest.testBasicPojo" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestPojoDataTest_testBasicPojo - 2018.12.22 at 16h 46m 42s.xml">
-      <configuration name="TestPojoDataTest.testBasicPojo" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestPojoDataTest_testBasicPojo - 2018.12.22 at 16h 46m 53s.xml">
-      <configuration name="TestPojoDataTest.testBasicPojo" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestPojoDataTest_testBasicPojo - 2018.12.22 at 16h 50m 07s.xml">
-      <configuration name="TestPojoDataTest.testBasicPojo" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="TestPojoDataTest_testBasicPojo - 2018.12.22 at 17h 02m 56s.xml">
       <configuration name="TestPojoDataTest.testBasicPojo" configurationId="JUnit" />
     </history-entry>
@@ -531,9 +512,21 @@
     <history-entry file="TestPojoDataTest_testImmutableObjectWithBuilder - 2018.12.22 at 17h 25m 24s.xml">
       <configuration name="TestPojoDataTest.testImmutableObjectWithBuilder" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="TestPojoDataTest_testImmutableObjectWithBuilder - 2018.12.22 at 17h 38m 21s.xml">
+      <configuration name="TestPojoDataTest.testImmutableObjectWithBuilder" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestPojoDataTest_testImmutableObjectWithBuilder - 2018.12.22 at 17h 38m 30s.xml">
+      <configuration name="TestPojoDataTest.testImmutableObjectWithBuilder" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestPojoDataTest_realisticTest - 2018.12.22 at 17h 41m 21s.xml">
+      <configuration name="TestPojoDataTest.realisticTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestPojoDataTest_testBasicPojo - 2018.12.22 at 17h 42m 01s.xml">
+      <configuration name="TestPojoDataTest.testBasicPojo" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="21409000" />
+    <option name="totallyTimeSpent" value="21846000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1200" extended-state="0" />
@@ -580,21 +573,21 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java</url>
-          <line>52</line>
+          <line>49</line>
           <properties />
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java</url>
-          <line>45</line>
+          <line>42</line>
           <properties />
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/PojoBuilder.java</url>
-          <line>54</line>
+          <url>file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java</url>
+          <line>34</line>
           <properties />
-          <option name="timeStamp" value="12" />
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -721,23 +714,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="698">
-            <caret line="41" column="21" lean-forward="true" selection-start-line="41" selection-start-column="21" selection-end-line="41" selection-end-column="21" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/Gender.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="58">
-          <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home/src.zip!/java/security/SecureRandom.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-5316">
@@ -845,16 +821,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/Person.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/generators/ByteGenerator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="203">
@@ -939,16 +905,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/TestPojo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.3.2/junit-platform-commons-1.3.2.jar!/org/junit/platform/commons/util/ReflectionUtils.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-22">
@@ -967,18 +923,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="116">
           <caret line="4" column="21" selection-start-line="4" selection-start-column="21" selection-end-line="4" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="45" column="81" lean-forward="true" selection-start-line="45" selection-start-column="81" selection-end-line="45" selection-end-column="81" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2135#2136#0" expanded="true" />
-            <element signature="e#2170#2171#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1015,13 +959,62 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/kurtymckurt/TestPojoData/PojoBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="57" column="13" lean-forward="true" selection-start-line="57" selection-start-column="13" selection-end-line="57" selection-end-column="13" />
+        <state relative-caret-position="32">
+          <caret line="54" selection-start-line="54" selection-end-line="54" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1225#1226#0" expanded="true" />
             <element signature="e#1253#1254#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/Gender.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="58">
+          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/Person.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="11" column="14" lean-forward="true" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/pojo/TestPojo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/kurtymckurt/TestPojoData/TestPojoDataTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="349">
+          <caret line="22" column="27" lean-forward="true" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2135#2136#0" expanded="true" />
+            <element signature="e#2170#2171#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="541">
+            <caret line="20" column="30" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="30" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
