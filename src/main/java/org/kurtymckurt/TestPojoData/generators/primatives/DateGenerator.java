@@ -1,11 +1,12 @@
-package org.kurtymckurt.TestPojoData.generators;
+package org.kurtymckurt.TestPojoData.generators.primatives;
 
+import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Field;
 import java.util.Date;
 
-public class DateGenerator implements Generator{
+public class DateGenerator implements Generator {
 
     @Override
     public Object generate(Class<?> clazz, Field field) {

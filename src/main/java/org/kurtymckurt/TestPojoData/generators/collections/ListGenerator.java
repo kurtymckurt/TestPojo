@@ -1,4 +1,4 @@
-package org.kurtymckurt.TestPojoData.generators;
+package org.kurtymckurt.TestPojoData.generators.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;

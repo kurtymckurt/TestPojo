@@ -1,6 +1,8 @@
 package org.kurtymckurt.TestPojoData.util;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class RandomUtils {
@@ -14,6 +16,10 @@ public class RandomUtils {
      */
     public static int getRandomIntWithinRange(int max) {
         return random.nextInt(max);
+    }
+
+    public static int getRandomIntWithinRange(int min, int max) {
+        return min + random.nextInt((max - min) + 1);
     }
 
     public static int getRandomInt() {
@@ -53,5 +59,23 @@ public class RandomUtils {
     public static Character getRandomCharacter() {
         String uuid = UUID.randomUUID().toString();
         return uuid.charAt(getRandomIntWithinRange(uuid.length()));
+    }
+
+
+    public static LocalDate getRandomLocalDate() {
+        return LocalDate.of(
+              RandomUtils.getRandomIntWithinRange(1990, 9999),
+              RandomUtils.getRandomIntWithinRange(1, 12),
+              RandomUtils.getRandomIntWithinRange(1, 28));
+    }
+
+    public static LocalDateTime getRandomLocalDateTime() {
+        return LocalDateTime.of(
+              RandomUtils.getRandomIntWithinRange(1990, 9999),
+              RandomUtils.getRandomIntWithinRange(1, 12),
+              RandomUtils.getRandomIntWithinRange(1, 28),
+              RandomUtils.getRandomIntWithinRange(1, 12),
+              RandomUtils.getRandomIntWithinRange(1,59),
+              RandomUtils.getRandomIntWithinRange(1, 59));
     }
 }

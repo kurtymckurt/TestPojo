@@ -1,5 +1,6 @@
-package org.kurtymckurt.TestPojoData.generators;
+package org.kurtymckurt.TestPojoData.generators.primatives;
 
+import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Field;

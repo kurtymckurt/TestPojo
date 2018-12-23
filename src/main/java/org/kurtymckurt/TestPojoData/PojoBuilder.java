@@ -3,6 +3,11 @@ package org.kurtymckurt.TestPojoData;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kurtymckurt.TestPojoData.generators.*;
+import org.kurtymckurt.TestPojoData.generators.collections.ListGenerator;
+import org.kurtymckurt.TestPojoData.generators.collections.MapGenerator;
+import org.kurtymckurt.TestPojoData.generators.collections.SetGenerator;
+import org.kurtymckurt.TestPojoData.generators.primatives.*;
+import org.kurtymckurt.TestPojoData.generators.time.*;
 import org.kurtymckurt.TestPojoData.providers.Provider;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
@@ -32,6 +37,8 @@ public class PojoBuilder {
     }
 
     private void addCoreGenerators() {
+
+        //Primitive Objects
         generators.add(new IntegerGenerator());
         generators.add(new LongGenerator());
         generators.add(new DoubleGenerator());
@@ -41,10 +48,21 @@ public class PojoBuilder {
         generators.add(new StringGenerator());
         generators.add(new ShortGenerator());
         generators.add(new CharacterGenerator());
-        generators.add(new DateGenerator());
+
+        //Collections
         generators.add(new SetGenerator());
         generators.add(new ListGenerator());
         generators.add(new MapGenerator());
+
+        // Date
+        generators.add(new DateGenerator());
+
+        // java.time
+        generators.add(new LocalDateTimeGenerator());
+        generators.add(new LocalDateGenerator());
+        generators.add(new ZonedDateTimeGenerator());
+        generators.add(new InstantGenerator());
+        generators.add(new OffsetDateTimeGenerator());
     }
 
     public Object buildObject() {

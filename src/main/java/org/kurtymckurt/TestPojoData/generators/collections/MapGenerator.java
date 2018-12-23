@@ -1,7 +1,8 @@
-package org.kurtymckurt.TestPojoData.generators;
+package org.kurtymckurt.TestPojoData.generators.collections;
 
 import org.kurtymckurt.TestPojoData.PojoBuilder;
 import org.kurtymckurt.TestPojoData.PojoBuilderConfiguration;
+import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Field;
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class MapGenerator implements Generator{
+public class MapGenerator implements Generator {
    @Override public Object generate(Class<?> clazz, Field field) {
       ConcurrentMap<Object, Object> map = new ConcurrentHashMap<>();
       Type[] actualTypeArguments = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();

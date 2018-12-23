@@ -1,10 +1,11 @@
-package org.kurtymckurt.TestPojoData.generators;
+package org.kurtymckurt.TestPojoData.generators.primatives;
 
+import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Field;
 
-public class ByteGenerator implements Generator{
+public class ByteGenerator implements Generator {
 
     @Override
     public Object generate(Class<?> clazz, Field field) {
