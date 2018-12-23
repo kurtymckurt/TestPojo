@@ -8,7 +8,7 @@ public class ListGenerator extends GenericCollectionGenerator<List> {
 
     @Override
     boolean supports(Class<?> clazz) {
-        return clazz.isAssignableFrom(List.class);
+        return clazz.isAssignableFrom(List.class) || clazz.isAssignableFrom(Collection.class);
     }
 
     @Override

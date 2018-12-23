@@ -9,14 +9,14 @@ For example, if you had a `Person` class that has
 a lot of instance variables, it's a pain to generate 
 that pojo with data when testing.  
 
-##Features
+## Features
 * Supports all primitives and Object number types
 * Has support for Generators
     * This is how you would generate a single low level type
         * I.E. Date, DateTime, Integer, etc.
 * Has support for providers
     * This is how you provide instances of a type if you dont have access to the no arg constructor
-        * IE Immutable objects for example.
+        * I.E. Immutable objects for example.
         
 See test package for examples.
 

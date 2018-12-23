@@ -18,7 +18,7 @@ public class TestPojo {
 
     private List<Integer> integers;
     private Set<Long> longs;
-    private Collection<AnotherPojo> collectionOfPojos;
+    private Collection<Person> collectionOfPeople;
 
     //Test Custom pojo
     private AnotherPojo anotherPojo;

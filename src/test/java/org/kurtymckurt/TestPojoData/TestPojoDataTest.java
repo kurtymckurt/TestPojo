@@ -36,6 +36,7 @@ public class TestPojoDataTest {
         assertNotNull(person.getName());
         assertNotNull(person.getBirthDate());
         assertNotNull(person.getAddress());
+        assertNotNull(person.getState());
     }
 
     @Test

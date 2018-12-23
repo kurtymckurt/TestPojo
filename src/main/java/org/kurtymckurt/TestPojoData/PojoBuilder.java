@@ -25,8 +25,10 @@ public class PojoBuilder {
         clazz = configuration.getClazz();
         generators = new ArrayList<>();
         providers = new ArrayList<>(configuration.getProviders());
-        addCoreGenerators();
+        //Add the custom ones first in case they want
+        //to override.
         generators.addAll(configuration.getGenerators());
+        addCoreGenerators();
     }
 
     private void addCoreGenerators() {
@@ -40,7 +42,6 @@ public class PojoBuilder {
         generators.add(new ShortGenerator());
         generators.add(new CharacterGenerator());
         generators.add(new DateGenerator());
-        generators.add(new CollectionGenerator());
         generators.add(new SetGenerator());
         generators.add(new ListGenerator());
     }
