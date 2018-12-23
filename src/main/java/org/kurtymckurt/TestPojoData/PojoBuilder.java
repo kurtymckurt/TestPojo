@@ -1,14 +1,14 @@
 package org.kurtymckurt.TestPojoData;
 
-
 import lombok.extern.slf4j.Slf4j;
-import org.kurtymckurt.TestPojoData.generators.*;
+import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.generators.collections.ListGenerator;
 import org.kurtymckurt.TestPojoData.generators.collections.MapGenerator;
 import org.kurtymckurt.TestPojoData.generators.collections.SetGenerator;
 import org.kurtymckurt.TestPojoData.generators.primatives.*;
 import org.kurtymckurt.TestPojoData.generators.time.*;
 import org.kurtymckurt.TestPojoData.providers.Provider;
+import org.kurtymckurt.TestPojoData.providers.ProviderFunction;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Array;
@@ -25,9 +25,11 @@ public class PojoBuilder {
     private final List<Generator> generators;
     private final List<Provider> providers;
     private final Class<?> clazz;
+    private final ProviderFunction providerFunction;
 
     public PojoBuilder(PojoBuilderConfiguration configuration) {
         clazz = configuration.getClazz();
+        providerFunction = configuration.getProviderFunction();
         generators = new ArrayList<>();
         providers = new ArrayList<>(configuration.getProviders());
         //Add the custom ones first in case they want
@@ -82,11 +84,19 @@ public class PojoBuilder {
         Object instance = null;
 
         try {
+
+            //check if we have a provider function
+            if(providerFunction != null) {
+                instance = providerFunction.provide();
+            }
+
             //Check providers to see if we have something to generate this
             //bad boy for us.
-            for(Provider provider : providers) {
-                if(provider.supportsType(clazz)) {
-                    instance = provider.provide();
+            if(instance == null) {
+                for (Provider provider : providers) {
+                    if (provider.supportsType(clazz)) {
+                        instance = provider.provide();
+                    }
                 }
             }
             //If we didn't find a provider, try to new it up ourselves

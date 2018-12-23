@@ -61,6 +61,33 @@ There are circumstances in which TestPojoData may not be able to instantiate a n
 
 In the example below, we have an Immutable class that requires a builder in order to create.  Therefore, we wrote a provider that calls the method in order to generate a builder whenever the engine needs one.  Then, the engine will provide us with a builder with the filled in classes.  We may then modify and build to get our pojo.
 
+
+This example uses a provider function to provide the way to create the pojo instance if necessary.
+```java
+@Value
+@Builder
+public class ImmutablePojo {
+
+    private final String name;
+    private final String address;
+    private final String interestingAttribute;
+    private final Date birthday;
+    private List<Integer> listOfNumbers;
+}
+
+@Test
+public void testOurImmutabilePojo (){
+   ImmutablePojo pojo = TestPojoData.builder(
+         ImmutablePojoBuilder.class, () -> ImmutablePojo.builder())
+      .build()
+   .build();
+}
+
+```
+
+
+
+This example, shows how you can do it by implementing a provider globally for pojos that do not have a no arg constructor.
 ```java
 @Value
 @Builder

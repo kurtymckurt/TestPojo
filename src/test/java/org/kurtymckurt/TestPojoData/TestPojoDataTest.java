@@ -48,10 +48,25 @@ public class TestPojoDataTest {
     }
 
     @Test
-    public void testImmutableObjectWithBuilder() {
+    public void testImmutableObjectWithBuilderWithProviderFunction() {
         ImmutablePojo.ImmutablePojoBuilder immutablePojoBuilder = TestPojoData.builder(
-                ImmutablePojo.ImmutablePojoBuilder.class)
-                .addProvider(new OurImmutableBuilderProvider()).build();
+                ImmutablePojo.ImmutablePojoBuilder.class, () -> ImmutablePojo.builder()).build();
+
+        ImmutablePojo immutablePojo = immutablePojoBuilder.build();
+
+        //Lets make sure this immutable object has contents.
+        assertNotNull(immutablePojo.getAddress());
+        assertNotNull(immutablePojo.getBirthday());
+        assertNotNull(immutablePojo.getInterestingAttribute());
+        assertNotNull(immutablePojo.getListOfNumbers());
+        assertTrue(immutablePojo.getListOfNumbers().size()>0);
+        assertNotNull(immutablePojo.getName());
+    }
+
+    @Test
+    public void testImmutableObjectWithBuilderWithCustomProvider() {
+        ImmutablePojo.ImmutablePojoBuilder immutablePojoBuilder = TestPojoData.builder(
+              ImmutablePojo.ImmutablePojoBuilder.class).addProvider(new OurImmutableBuilderProvider()).build();
 
         ImmutablePojo immutablePojo = immutablePojoBuilder.build();
 
