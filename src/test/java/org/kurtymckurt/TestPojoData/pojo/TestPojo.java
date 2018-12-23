@@ -4,7 +4,9 @@ import lombok.Data;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 @Data
 public class TestPojo {
@@ -19,6 +21,9 @@ public class TestPojo {
     private List<Integer> integers;
     private Set<Long> longs;
     private Collection<Person> collectionOfPeople;
+    private Map<String, Long> mapOfIdentifiersToLong;
+    private ConcurrentMap<String, Long> concurrentMapOfIdentifiersToLong;
+    private Map<Long, Person> mapOfLongToPersons;
 
     //Test Custom pojo
     private AnotherPojo anotherPojo;

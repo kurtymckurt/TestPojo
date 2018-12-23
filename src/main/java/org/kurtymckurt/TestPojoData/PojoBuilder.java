@@ -44,6 +44,7 @@ public class PojoBuilder {
         generators.add(new DateGenerator());
         generators.add(new SetGenerator());
         generators.add(new ListGenerator());
+        generators.add(new MapGenerator());
     }
 
     public Object buildObject() {

@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
-public abstract class GenericCollectionGenerator<T extends Collection> implements Generator {
+public abstract class GenericCollectionGenerator implements Generator {
     @Override
     public Object generate(Class<?> clazz, Field field) {
         Collection<Object> instance = createInstance();

@@ -26,6 +26,13 @@ public class TestPojoDataTest {
         assertNotNull(testPojo.getIntObjectValue());
         assertNotNull(testPojo.getShortObjectValue());
         assertNotNull(testPojo.getLongObjectValue());
+        assertNotNull(testPojo.getMapOfIdentifiersToLong());
+        assertNotNull(testPojo.getMapOfLongToPersons());
+        assertNotNull(testPojo.getConcurrentMapOfIdentifiersToLong());
+
+        assertTrue(testPojo.getMapOfIdentifiersToLong().size() > 0);
+        assertTrue(testPojo.getMapOfLongToPersons().size() > 0);
+        assertTrue(testPojo.getConcurrentMapOfIdentifiersToLong().size() > 0);
 
     }
 
