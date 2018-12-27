@@ -2,10 +2,7 @@ package org.kurtymckurt.TestPojoData.pojo;
 
 import lombok.Data;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 
 @Data
@@ -24,6 +21,11 @@ public class TestPojo {
     private Map<String, Long> mapOfIdentifiersToLong;
     private ConcurrentMap<String, Long> concurrentMapOfIdentifiersToLong;
     private Map<Long, Person> mapOfLongToPersons;
+    private NavigableSet<Person> navigableSetOfPeople;
+    private NavigableMap<Person, Long> navigableMap;
+    private Queue<Person> queue;
+    private Deque<Person> deque;
+    private Iterable<Person> iterable;
 
     //Test Custom pojo
     private AnotherPojo anotherPojo;

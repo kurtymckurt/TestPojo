@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Data
-public class Person {
+public class Person implements Comparable<Person>{
     private String name;
     private String address;
     private State state;
@@ -20,4 +20,12 @@ public class Person {
     private Instant birthDateInstant;
     private ZonedDateTime birthDateZoneDateTime;
     private OffsetDateTime birthDateOffsetDateTime;
+
+    @Override public int compareTo(Person o) {
+        int result = -1;
+        if(this.age == o.age) result = 0;
+        else if(this.age > o.age) result  = 1;
+
+        return result;
+    }
 }

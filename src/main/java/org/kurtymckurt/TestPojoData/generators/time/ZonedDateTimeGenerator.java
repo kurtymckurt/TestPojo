@@ -14,7 +14,7 @@ public class ZonedDateTimeGenerator implements Generator {
 
       String[] zones = ZoneId.getAvailableZoneIds().toArray(new String[ZoneId.getAvailableZoneIds().size()]);
       //int year, int month, int dayOfMonth, int hour, int minute, int second
-      ZonedDateTime zonedDateTime = ZonedDateTime.of(RandomUtils.getRandomLocalDateTime(), ZoneId.of(zones[RandomUtils.getRandomIntWithinRange(0, zones.length)]));
+      ZonedDateTime zonedDateTime = ZonedDateTime.of(RandomUtils.getRandomLocalDateTime(), ZoneId.of(zones[RandomUtils.getRandomIntWithinRange(0, zones.length-1)]));
       return zonedDateTime;
    }
 

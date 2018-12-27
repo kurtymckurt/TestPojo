@@ -78,7 +78,7 @@ public class ImmutablePojo {
 @Test
 public void testOurImmutabilePojo (){
    ImmutablePojo pojo = TestPojoData.builder(
-         ImmutablePojoBuilder.class, () -> ImmutablePojo.builder())
+         ImmutablePojoBuilder.class, ImmutablePojo::builder())
       .build()
    .build();
 }

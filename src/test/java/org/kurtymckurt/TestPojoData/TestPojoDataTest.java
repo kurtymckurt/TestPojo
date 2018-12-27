@@ -6,8 +6,7 @@ import org.kurtymckurt.TestPojoData.pojo.Person;
 import org.kurtymckurt.TestPojoData.pojo.TestPojo;
 import org.kurtymckurt.TestPojoData.providers.Provider;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPojoDataTest {
 
@@ -29,7 +28,16 @@ public class TestPojoDataTest {
         assertNotNull(testPojo.getMapOfIdentifiersToLong());
         assertNotNull(testPojo.getMapOfLongToPersons());
         assertNotNull(testPojo.getConcurrentMapOfIdentifiersToLong());
+        assertNotNull(testPojo.getNavigableSetOfPeople());
+        assertNotNull(testPojo.getNavigableMap());
+        assertNotNull(testPojo.getQueue());
+        assertNotNull(testPojo.getDeque());
+        assertNotNull(testPojo.getIterable());
 
+        assertTrue(testPojo.getNavigableMap().size() > 0);
+        assertTrue(testPojo.getQueue().size() > 0);
+        assertTrue(testPojo.getDeque().size() > 0);
+        assertTrue(testPojo.getNavigableSetOfPeople().size() > 0);
         assertTrue(testPojo.getMapOfIdentifiersToLong().size() > 0);
         assertTrue(testPojo.getMapOfLongToPersons().size() > 0);
         assertTrue(testPojo.getConcurrentMapOfIdentifiersToLong().size() > 0);
@@ -50,7 +58,7 @@ public class TestPojoDataTest {
     @Test
     public void testImmutableObjectWithBuilderWithProviderFunction() {
         ImmutablePojo.ImmutablePojoBuilder immutablePojoBuilder = TestPojoData.builder(
-                ImmutablePojo.ImmutablePojoBuilder.class, () -> ImmutablePojo.builder()).build();
+                ImmutablePojo.ImmutablePojoBuilder.class, ImmutablePojo::builder).build();
 
         ImmutablePojo immutablePojo = immutablePojoBuilder.build();
 

@@ -2,9 +2,7 @@ package org.kurtymckurt.TestPojoData;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kurtymckurt.TestPojoData.generators.Generator;
-import org.kurtymckurt.TestPojoData.generators.collections.ListGenerator;
-import org.kurtymckurt.TestPojoData.generators.collections.MapGenerator;
-import org.kurtymckurt.TestPojoData.generators.collections.SetGenerator;
+import org.kurtymckurt.TestPojoData.generators.collections.*;
 import org.kurtymckurt.TestPojoData.generators.primatives.*;
 import org.kurtymckurt.TestPojoData.generators.time.*;
 import org.kurtymckurt.TestPojoData.providers.Provider;
@@ -55,6 +53,10 @@ public class PojoBuilder {
         generators.add(new SetGenerator());
         generators.add(new ListGenerator());
         generators.add(new MapGenerator());
+        generators.add(new NavigableSetGenerator());
+        generators.add(new NavigableMapGenerator());
+        generators.add(new QueueGenerator());
+        generators.add(new BlockingDequeGenerator());
 
         // Date
         generators.add(new DateGenerator());
