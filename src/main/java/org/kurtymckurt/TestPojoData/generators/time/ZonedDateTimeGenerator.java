@@ -1,6 +1,7 @@
 package org.kurtymckurt.TestPojoData.generators.time;
 
 import org.kurtymckurt.TestPojoData.generators.Generator;
+import org.kurtymckurt.TestPojoData.limiters.Limiter;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Field;
@@ -9,7 +10,7 @@ import java.time.ZonedDateTime;
 
 public class ZonedDateTimeGenerator implements Generator {
    @Override
-   public Object generate(Class<?> clazz, Field field) {
+   public Object generate(Class<?> clazz, Field field, Limiter limiter) {
 
 
       String[] zones = ZoneId.getAvailableZoneIds().toArray(new String[ZoneId.getAvailableZoneIds().size()]);

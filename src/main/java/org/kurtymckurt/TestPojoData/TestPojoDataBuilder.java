@@ -1,6 +1,5 @@
 package org.kurtymckurt.TestPojoData;
 
-import lombok.Data;
 import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.limiters.Limiter;
 import org.kurtymckurt.TestPojoData.providers.Provider;
@@ -11,14 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Data
 public class TestPojoDataBuilder<T> {
 
     private final Class<T> clazz;
     private final ProviderFunction providerFunction;
     private final List<Provider> providers;
     private final List<Generator> customGenerators;
-    private final Map<String, List<Limiter>> fieldToLimiters;
+    private final Map<String, Limiter> fieldToLimiter;
 
     public TestPojoDataBuilder(Class<T> clazz) {
         this(clazz, null);
@@ -29,7 +27,7 @@ public class TestPojoDataBuilder<T> {
         this.providerFunction = providerFunction;
         this.customGenerators = new ArrayList<>();
         this.providers = new ArrayList<>();
-        this.fieldToLimiters = new HashMap<>();
+        this.fieldToLimiter = new HashMap<>();
     }
 
     public TestPojoDataBuilder<T> addCustomGenerator(Generator generator) {
@@ -42,14 +40,8 @@ public class TestPojoDataBuilder<T> {
         return this;
     }
 
-    public TestPojoDataBuilder<T> addLimiter(Limiter limiter, String fieldName) {
-        List<Limiter> limiterList = fieldToLimiters.get(fieldName);
-        if(limiterList == null) {
-            limiterList = new ArrayList<>();
-        }
-
-        limiterList.add(limiter);
-        fieldToLimiters.put(fieldName, limiterList);
+    public TestPojoDataBuilder<T> addLimiter(String fieldName, Limiter limiter) {
+        fieldToLimiter.put(fieldName, limiter);
         return this;
     }
 
@@ -61,7 +53,7 @@ public class TestPojoDataBuilder<T> {
                         .providerFunction(providerFunction)
                         .generators(customGenerators)
                         .providers(providers)
-                        .limiters(fieldToLimiters)
+                        .limiters(fieldToLimiter)
                         .build())
                 .buildObject();
     }

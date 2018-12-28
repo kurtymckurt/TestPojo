@@ -1,6 +1,7 @@
 package org.kurtymckurt.TestPojoData.generators.time;
 
 import org.kurtymckurt.TestPojoData.generators.Generator;
+import org.kurtymckurt.TestPojoData.limiters.Limiter;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Field;
@@ -9,7 +10,7 @@ import java.time.ZoneOffset;
 
 public class OffsetDateTimeGenerator implements Generator {
    @Override
-   public Object generate(Class<?> clazz, Field field) {
+   public Object generate(Class<?> clazz, Field field, Limiter limiter) {
 
       OffsetDateTime offsetDateTime = OffsetDateTime.of(
             RandomUtils.getRandomLocalDateTime(),

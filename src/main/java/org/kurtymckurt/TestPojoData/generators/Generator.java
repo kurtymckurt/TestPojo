@@ -1,5 +1,7 @@
 package org.kurtymckurt.TestPojoData.generators;
 
+import org.kurtymckurt.TestPojoData.limiters.Limiter;
+
 import java.lang.reflect.Field;
 
 /***
@@ -7,6 +9,6 @@ import java.lang.reflect.Field;
  *
  */
 public interface Generator {
-    Object generate(Class<?> clazz, Field field);
+    Object generate(Class<?> clazz, Field field, Limiter limiter);
     boolean supportsType(Class<?> clazz);
 }

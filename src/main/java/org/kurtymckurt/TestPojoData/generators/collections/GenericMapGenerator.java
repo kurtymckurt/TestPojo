@@ -3,7 +3,9 @@ package org.kurtymckurt.TestPojoData.generators.collections;
 import org.kurtymckurt.TestPojoData.PojoBuilder;
 import org.kurtymckurt.TestPojoData.PojoBuilderConfiguration;
 import org.kurtymckurt.TestPojoData.generators.Generator;
-import org.kurtymckurt.TestPojoData.util.RandomUtils;
+import org.kurtymckurt.TestPojoData.limiters.Limiter;
+import org.kurtymckurt.TestPojoData.util.LimiterUtils;
+import org.kurtymckurt.TestPojoData.util.NullSafeLimits;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -12,7 +14,7 @@ import java.util.Map;
 
 public abstract class GenericMapGenerator implements Generator {
     @Override
-    public Object generate(Class<?> clazz, Field field) {
+    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
 
         Map<Object,Object> map = createInstance();
         Type[] actualTypeArguments = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
@@ -27,8 +29,9 @@ public abstract class GenericMapGenerator implements Generator {
               PojoBuilderConfiguration.builder()
                     .clazz(value)
                     .build());
-        int size = RandomUtils.getRandomIntWithinRange(1,100);
-        for(int i = 0; i < size; i++){
+
+        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, 100, limiter);
+        for(int i = 0; i < nullSafeLimits.size; i++){
             map.put(keyBuilder.buildObject(), valueBuilder.buildObject());
         }
 

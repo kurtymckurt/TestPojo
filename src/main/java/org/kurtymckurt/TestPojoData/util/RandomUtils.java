@@ -18,8 +18,10 @@ public class RandomUtils {
         return random.nextInt(max);
     }
 
-    public static int getRandomIntWithinRange(int min, int max) {
-        return min + random.nextInt((max - min) + 1);
+    public static int getRandomIntWithinRange(long min, long max) {
+        if(max > Integer.MAX_VALUE) max = Integer.MAX_VALUE;
+        if(min < Integer.MIN_VALUE) min = Integer.MIN_VALUE;
+        return (int)((random.nextDouble() * ((max - min) + 1)) + min);
     }
 
     public static int getRandomInt() {
@@ -34,16 +36,46 @@ public class RandomUtils {
         return Double.valueOf(random.nextDouble());
     }
 
+    public static Double getRandomDoubleWithinRange(double min, double max) {
+        return (random.nextDouble() * ((max - min) + 1)) + min;
+    }
+
     public static Float getRandomFloatObject() {
         return Float.valueOf(random.nextFloat());
+    }
+
+    public static Float getRandomFloatWithinRange(long min, long max) {
+        float floatMin;
+        float floatMax;
+        if(max > Float.MAX_VALUE) {
+            floatMin = Float.MAX_VALUE;
+        } else {
+            floatMin = min;
+        }
+        if(min < Float.MIN_VALUE) {
+            floatMax = Float.MIN_VALUE;
+        } else {
+            floatMax = max;
+        }
+        return (random.nextFloat() * ((floatMax - floatMin) + 1)) + floatMin;
     }
 
     public static Long getRandomLongObject() {
         return Long.valueOf(random.nextLong());
     }
 
+    public static Long getRandomLongWithinRange(long min, long max) {
+        return (long)(random.nextDouble() * ((max - min) + 1)) + min;
+    }
+
     public static Short getRandomShortObject() {
         return Short.valueOf((short)random.nextInt(Short.MAX_VALUE));
+    }
+
+    public static Short getRandomShortWithinRange(long min, long max) {
+        if(max > Short.MAX_VALUE) max = Short.MAX_VALUE;
+        if(min < Short.MIN_VALUE) min = Short.MIN_VALUE;
+        return Short.valueOf((short)((random.nextDouble() * ((max - min) + 1)) + min));
     }
 
     public static byte getRandomByte() {

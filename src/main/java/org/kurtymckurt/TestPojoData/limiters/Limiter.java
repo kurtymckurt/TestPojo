@@ -1,8 +1,13 @@
 package org.kurtymckurt.TestPojoData.limiters;
 
-public enum Limiter {
-   LENGTH,  // Strings, Arrays
-   SIZE,    // Collections
-   MIN,     // Numbers
-   MAX      // Numbers
+import lombok.Builder;
+import lombok.Value;
+
+@Value
+@Builder
+public class Limiter {
+   private Integer length;  // Strings, Arrays
+   private Integer size;    // Collections
+   private Long min;     // Numbers
+   private Long max;     // Numbers
 }

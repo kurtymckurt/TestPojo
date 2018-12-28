@@ -25,6 +25,6 @@ public class PojoBuilderConfiguration {
     private List<Generator> generators;
 
     @Singular
-    private Map<String, List<Limiter>> limiters;
+    private Map<String, Limiter> limiters;
 
 }
