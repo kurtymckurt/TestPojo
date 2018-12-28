@@ -5,6 +5,7 @@ import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.generators.collections.*;
 import org.kurtymckurt.TestPojoData.generators.primatives.*;
 import org.kurtymckurt.TestPojoData.generators.time.*;
+import org.kurtymckurt.TestPojoData.limiters.Limiter;
 import org.kurtymckurt.TestPojoData.providers.Provider;
 import org.kurtymckurt.TestPojoData.providers.ProviderFunction;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
@@ -13,6 +14,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /****
  * Actually does the logic of creating the pojo using reflection.
@@ -24,16 +26,31 @@ public class PojoBuilder {
     private final List<Provider> providers;
     private final Class<?> clazz;
     private final ProviderFunction providerFunction;
+    private final Map<String, List<Limiter>> limiters;
 
     public PojoBuilder(PojoBuilderConfiguration configuration) {
-        clazz = configuration.getClazz();
-        providerFunction = configuration.getProviderFunction();
-        generators = new ArrayList<>();
-        providers = new ArrayList<>(configuration.getProviders());
+        this.clazz = configuration.getClazz();
+        this.providerFunction = configuration.getProviderFunction();
+        this.limiters = configuration.getLimiters();
+        this.generators = new ArrayList<>();
+
+        verifyLimiters();
+
+
+        this.providers = new ArrayList<>(configuration.getProviders());
         //Add the custom ones first in case they want
         //to override.
-        generators.addAll(configuration.getGenerators());
+        this.generators.addAll(configuration.getGenerators());
         addCoreGenerators();
+
+
+    }
+
+    private void verifyLimiters() {
+        
+
+
+
     }
 
     private void addCoreGenerators() {

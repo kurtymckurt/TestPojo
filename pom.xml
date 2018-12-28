@@ -59,5 +59,10 @@
             <version>2.11.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>0.16</version>
+        </dependency>
     </dependencies>
 </project>

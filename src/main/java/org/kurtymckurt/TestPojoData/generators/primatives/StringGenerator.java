@@ -1,15 +1,14 @@
 package org.kurtymckurt.TestPojoData.generators.primatives;
 
-import org.kurtymckurt.TestPojoData.generators.Generator;
-import org.kurtymckurt.TestPojoData.util.RandomUtils;
+import org.kurtymckurt.TestPojoData.generators.AbstractGenerator;
 
 import java.lang.reflect.Field;
 
-public class StringGenerator implements Generator {
+public class StringGenerator extends AbstractGenerator {
 
     @Override
     public Object generate(Class<?> clazz, Field field) {
-        return RandomUtils.getRandomString();
+        return faker.funnyName().name();
     }
 
     @Override
