@@ -7,7 +7,7 @@ import lombok.Value;
 @Builder
 public class NullSafeLimits {
 
-    public long length;
+    public int length;
     public long size;
     public long min;
     public long max;

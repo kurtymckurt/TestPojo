@@ -30,7 +30,7 @@ public abstract class GenericMapGenerator implements Generator {
                     .clazz(value)
                     .build());
 
-        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, 100, limiter);
+        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, limiter);
         for(int i = 0; i < nullSafeLimits.size; i++){
             map.put(keyBuilder.buildObject(), valueBuilder.buildObject());
         }

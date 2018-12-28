@@ -9,6 +9,8 @@ import org.kurtymckurt.TestPojoData.generators.time.*;
 import org.kurtymckurt.TestPojoData.limiters.Limiter;
 import org.kurtymckurt.TestPojoData.providers.Provider;
 import org.kurtymckurt.TestPojoData.providers.ProviderFunction;
+import org.kurtymckurt.TestPojoData.util.LimiterUtils;
+import org.kurtymckurt.TestPojoData.util.NullSafeLimits;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Array;
@@ -193,7 +195,7 @@ public class PojoBuilder {
             } else if(type.isArray()) {
                 Class<?> componentType = type.getComponentType();
                 log.debug("[*] creating array of type: {}", componentType);
-                Object arr = generateArray(componentType);
+                Object arr = generateArray(componentType, limiters.get(f));
                 f.set(instance, arr);
             } else {
 
@@ -217,23 +219,24 @@ public class PojoBuilder {
         }
     }
 
-    Object generateArray(Class<?> type) {
-        int size = RandomUtils.getRandomIntWithinRange(10);
+    Object generateArray(Class<?> type, Limiter limiter) {
+        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 10, limiter);
+        int size = nullSafeLimits.length;
         Object arr = Array.newInstance(type, size);
 
         for(int i = 0; i < size; i++) {
 
             //Primitives
             if (type.isAssignableFrom(Integer.TYPE)) {
-                Array.setInt(arr, i, RandomUtils.getRandomInt());
+                Array.setInt(arr, i, (int) new IntegerGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Double.TYPE)) {
-                Array.setDouble(arr, i, RandomUtils.getRandomDoubleObject());
+                Array.setDouble(arr, i, (double) new DoubleGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Float.TYPE)) {
-                Array.setFloat(arr, i, RandomUtils.getRandomFloatObject());
+                Array.setFloat(arr, i, (float) new FloatGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Long.TYPE)) {
-                Array.setLong(arr, i, RandomUtils.getRandomLongObject());
+                Array.setLong(arr, i, (long) new LongGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Short.TYPE)) {
-                Array.setShort(arr, i, RandomUtils.getRandomShortObject());
+                Array.setShort(arr, i, (short) new ShortGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Byte.TYPE)) {
                 Array.setByte(arr, i, RandomUtils.getRandomByte());
             } else if (type.isAssignableFrom(Character.TYPE)) {
@@ -245,7 +248,7 @@ public class PojoBuilder {
                 for(Generator generator : generators) {
                     if(generator.supportsType(type)) {
                         generated = true;
-                        Array.set(arr, i, generator.generate(type, null, null));
+                        Array.set(arr, i, generator.generate(type, null, limiter));
                     }
                 }
 

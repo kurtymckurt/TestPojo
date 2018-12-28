@@ -12,7 +12,7 @@ public class LongGenerator implements Generator {
 
     @Override
     public Object generate(Class<?> clazz, Field field, Limiter limiter) {
-        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, 100, limiter);
+        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, limiter);
         return RandomUtils.getRandomLongWithinRange(nullSafeLimits.min, nullSafeLimits.max);
     }
 

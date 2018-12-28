@@ -20,7 +20,7 @@ public abstract class GenericCollectionGenerator implements Generator {
                 PojoBuilderConfiguration.builder()
                         .clazz(newClazz)
                         .build());
-        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, 100, limiter);
+        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(1, 100, limiter);
         for(int i = 0; i < nullSafeLimits.size; i++){
             instance.add(pojoBuilder.buildObject());
         }

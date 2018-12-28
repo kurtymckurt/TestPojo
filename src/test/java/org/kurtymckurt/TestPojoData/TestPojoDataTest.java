@@ -24,6 +24,12 @@ public class TestPojoDataTest {
                                 .max(1000L)
                                 .build()
                 )
+                .addLimiter("somethingElse",
+                        Limiter.builder()
+                            .min(0L)
+                            .max(9000L)
+                            .length(20)
+                                .build())
                 .build();
 
         //Test objects
@@ -54,6 +60,12 @@ public class TestPojoDataTest {
         assertTrue(testPojo.getMapOfIdentifiersToLong().size() > 0);
         assertTrue(testPojo.getMapOfLongToPersons().size() > 0);
         assertTrue(testPojo.getConcurrentMapOfIdentifiersToLong().size() > 0);
+
+        assertTrue(testPojo.getSomethingElse().length == 20);
+        for(int i = 0; i < testPojo.getSomethingElse().length; i++) {
+            assertTrue(testPojo.getSomethingElse()[i] >= 0
+                    && testPojo.getSomethingElse()[i] <= 9000);
+        }
 
     }
 
@@ -100,7 +112,7 @@ public class TestPojoDataTest {
         assertNotNull(immutablePojo.getBirthday());
         assertNotNull(immutablePojo.getInterestingAttribute());
         assertNotNull(immutablePojo.getListOfNumbers());
-        assertTrue(immutablePojo.getListOfNumbers().size()>0);
+        assertTrue(immutablePojo.getListOfNumbers().size() >= 0);
         assertNotNull(immutablePojo.getName());
     }
 
@@ -135,7 +147,7 @@ public class TestPojoDataTest {
     @Test
     public void testLimitInnerPojoLimiters() {
         Car car = TestPojoData.builder(Car.CarBuilder.class, Car::builder)
-                .addLimiter("speedometer.rateOfSpeed",
+                .addLimiter("speedometer.speed",
                         Limiter.builder().min(0L).max(120L).build()).build().build();
 
         assertTrue(car.getSpeedometer().getSpeed() >= 0 && car.getSpeedometer().getSpeed() <= 120);
