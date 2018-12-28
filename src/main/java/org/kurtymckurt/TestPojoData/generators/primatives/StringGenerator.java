@@ -1,15 +1,43 @@
 package org.kurtymckurt.TestPojoData.generators.primatives;
 
 import org.kurtymckurt.TestPojoData.generators.Generator;
+import org.kurtymckurt.TestPojoData.limiters.Limiter;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Field;
 
 public class StringGenerator implements Generator {
 
+    private final String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456780";
+
     @Override
-    public Object generate(Class<?> clazz, Field field) {
-        return RandomUtils.getRandomString();
+    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+        long min = 1;
+        long max = 100;
+        long length = RandomUtils.getRandomIntWithinRange(min, max);
+        if(limiter != null) {
+            if(limiter.getMin() != null) {
+                min = limiter.getMin();
+            }
+            if(limiter.getMax() != null) {
+                max = limiter.getMax();
+            }
+            if(limiter.getLength() != null) {
+                length = limiter.getLength();
+            } else {
+                length = RandomUtils.getRandomIntWithinRange(min, max);
+            }
+        }
+
+        return getChars(length);
+    }
+
+    private String getChars(long length) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length; i++){
+            builder.append(characters.charAt(RandomUtils.getRandomIntWithinRange(0, characters.length()-1)));
+        }
+        return builder.toString();
     }
 
     @Override

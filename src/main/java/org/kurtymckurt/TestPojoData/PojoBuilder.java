@@ -1,18 +1,19 @@
 package org.kurtymckurt.TestPojoData;
 
 import lombok.extern.slf4j.Slf4j;
+import org.kurtymckurt.TestPojoData.exceptions.NoSuchFieldException;
 import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.generators.collections.*;
 import org.kurtymckurt.TestPojoData.generators.primatives.*;
 import org.kurtymckurt.TestPojoData.generators.time.*;
+import org.kurtymckurt.TestPojoData.limiters.Limiter;
 import org.kurtymckurt.TestPojoData.providers.Provider;
 import org.kurtymckurt.TestPojoData.providers.ProviderFunction;
 import org.kurtymckurt.TestPojoData.util.RandomUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /****
  * Actually does the logic of creating the pojo using reflection.
@@ -24,16 +25,49 @@ public class PojoBuilder {
     private final List<Provider> providers;
     private final Class<?> clazz;
     private final ProviderFunction providerFunction;
+    private final Map<Field, Limiter> limiters;
 
     public PojoBuilder(PojoBuilderConfiguration configuration) {
-        clazz = configuration.getClazz();
-        providerFunction = configuration.getProviderFunction();
-        generators = new ArrayList<>();
-        providers = new ArrayList<>(configuration.getProviders());
+        this.clazz = configuration.getClazz();
+        this.providerFunction = configuration.getProviderFunction();
+        this.limiters = new HashMap<>();
+        this.generators = new ArrayList<>();
+
+        verifyAndBuildLimitersMap(configuration.getLimiters());
+
+        this.providers = new ArrayList<>(configuration.getProviders());
         //Add the custom ones first in case they want
         //to override.
-        generators.addAll(configuration.getGenerators());
+        this.generators.addAll(configuration.getGenerators());
         addCoreGenerators();
+
+
+    }
+
+    private void verifyAndBuildLimitersMap(Map<String, Limiter> limiters) {
+        Set<Map.Entry<String, Limiter>> entries =  limiters.entrySet();
+        for (Map.Entry<String, Limiter> entry : entries) {
+            String[] fieldNames = entry.getKey().split("\\.");
+            List<String> fieldNameList = new LinkedList<>();
+            for (String field : fieldNames) {
+                fieldNameList.add(field);
+            }
+            verifyAndBuildLimitersMapHelper(clazz, fieldNameList, entry.getValue());
+        }
+    }
+
+    private void verifyAndBuildLimitersMapHelper(Class<?> type, List<String> fieldNames, Limiter limiter) {
+        try {
+            Field declaredField = type.getDeclaredField(fieldNames.get(0));
+            if(fieldNames.size() > 1) {
+                fieldNames.remove(0);
+                verifyAndBuildLimitersMapHelper(declaredField.getType(), fieldNames, limiter);
+            } else {
+                limiters.put(declaredField, limiter);
+            }
+        } catch (java.lang.NoSuchFieldException e) {
+            throw new NoSuchFieldException(fieldNames.get(0), type, e);
+        }
     }
 
     private void addCoreGenerators() {
@@ -78,7 +112,7 @@ public class PojoBuilder {
         //our generators.
         for(Generator generator : generators) {
             if(generator.supportsType(clazz)){
-                return generator.generate(clazz, null);
+                return generator.generate(clazz, null, null);
             }
         }
 
@@ -88,7 +122,7 @@ public class PojoBuilder {
         try {
 
             //check if we have a provider function
-            if(providerFunction != null) {
+            if(providerFunction != null && clazz.equals(this.clazz)) {
                 instance = providerFunction.provide();
             }
 
@@ -137,17 +171,17 @@ public class PojoBuilder {
 
             //Gotta try the primitives
             if (type.isAssignableFrom(Integer.TYPE)) {
-                f.setInt(instance, RandomUtils.getRandomInt());
+                f.setInt(instance, (int) new IntegerGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Double.TYPE)) {
-                f.setDouble(instance, RandomUtils.getRandomDoubleObject());
+                f.setDouble(instance, (double) new DoubleGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Long.TYPE)) {
-                f.setLong(instance, RandomUtils.getRandomLongObject());
+                f.setLong(instance, (long) new LongGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Float.TYPE)) {
-                f.setFloat(instance, RandomUtils.getRandomFloatObject());
+                f.setFloat(instance, (float) new FloatGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Byte.TYPE)) {
                 f.setByte(instance, RandomUtils.getRandomByte());
             } else if (type.isAssignableFrom(Short.TYPE)) {
-                f.setShort(instance, RandomUtils.getRandomShortObject());
+                f.setShort(instance, (short) new ShortGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Boolean.TYPE)) {
                 f.setBoolean(instance, RandomUtils.getRandomBoolean());
             } else if (type.isAssignableFrom(Character.TYPE)) {
@@ -168,7 +202,8 @@ public class PojoBuilder {
                 for(Generator generator : generators) {
                     if(generator.supportsType(type)) {
                         generated = true;
-                        f.set(instance, generator.generate(type, f));
+                        f.set(instance, generator.generate(type, f, limiters.get(f)));
+                        break;
                     }
                 }
 
@@ -210,7 +245,7 @@ public class PojoBuilder {
                 for(Generator generator : generators) {
                     if(generator.supportsType(type)) {
                         generated = true;
-                        Array.set(arr, i, generator.generate(type, null));
+                        Array.set(arr, i, generator.generate(type, null, null));
                     }
                 }
 

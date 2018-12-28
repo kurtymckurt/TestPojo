@@ -1,18 +1,30 @@
 package org.kurtymckurt.TestPojoData;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kurtymckurt.TestPojoData.exceptions.NoSuchFieldException;
+import org.kurtymckurt.TestPojoData.limiters.Limiter;
+import org.kurtymckurt.TestPojoData.pojo.Car;
 import org.kurtymckurt.TestPojoData.pojo.ImmutablePojo;
 import org.kurtymckurt.TestPojoData.pojo.Person;
 import org.kurtymckurt.TestPojoData.pojo.TestPojo;
 import org.kurtymckurt.TestPojoData.providers.Provider;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestPojoDataTest {
 
     @Test
     public void testBasicPojo() {
-        TestPojo testPojo = TestPojoData.builder(TestPojo.class).build();
+        TestPojo testPojo = TestPojoData.builder(TestPojo.class)
+                .addLimiter(
+                        "anotherPojo.size", Limiter.builder()
+                                .min(0L)
+                                .max(1000L)
+                                .build()
+                )
+                .build();
 
         //Test objects
         assertNotNull(testPojo.getName());
@@ -34,6 +46,7 @@ public class TestPojoDataTest {
         assertNotNull(testPojo.getDeque());
         assertNotNull(testPojo.getIterable());
 
+        assertTrue(testPojo.getAnotherPojo().getSize() >= 0 && testPojo.getAnotherPojo().getSize() <= 1000);
         assertTrue(testPojo.getNavigableMap().size() > 0);
         assertTrue(testPojo.getQueue().size() > 0);
         assertTrue(testPojo.getDeque().size() > 0);
@@ -46,13 +59,33 @@ public class TestPojoDataTest {
 
     @Test
     public void realisticTest() {
-        Person person = TestPojoData.builder(Person.class).build();
+        Person person = TestPojoData.builder(Person.class)
+                .addLimiter(
+                        "age", Limiter.builder()
+                                .min(0L)
+                                .max(100L)
+                                .build()
+                )
+                .addLimiter(
+                        "name", Limiter.builder()
+                                .length(10)
+                                .build()
+                )
+                .addLimiter(
+                        "address", Limiter.builder()
+                        .length(20)
+                        .build()
+                )
+                .build();
         assertNotNull(person.getGender());
         assertNotNull(person.getName());
         assertNotNull(person.getBirthDate());
         assertNotNull(person.getAddress());
         assertNotNull(person.getState());
         assertNotNull(person.getSomeDateTime());
+        assertTrue(person.getAge() >= 0 && person.getAge() <= 100);
+        assertTrue(person.getName().length() == 10);
+        assertTrue(person.getAddress().length() == 20);
     }
 
     @Test
@@ -72,6 +105,17 @@ public class TestPojoDataTest {
     }
 
     @Test
+    public void testExceptionThrownWhenLimiterClassIsIncorrect() {
+        Assertions.assertThrows(NoSuchFieldException.class, () -> {
+            Person p = TestPojoData.builder(Person.class)
+                    .addLimiter(
+                            "age.doesn'texist", Limiter.builder().build()
+                    )
+                    .build();
+        });
+    }
+
+    @Test
     public void testImmutableObjectWithBuilderWithCustomProvider() {
         ImmutablePojo.ImmutablePojoBuilder immutablePojoBuilder = TestPojoData.builder(
               ImmutablePojo.ImmutablePojoBuilder.class).addProvider(new OurImmutableBuilderProvider()).build();
@@ -85,6 +129,16 @@ public class TestPojoDataTest {
         assertNotNull(immutablePojo.getListOfNumbers());
         assertTrue(immutablePojo.getListOfNumbers().size()>0);
         assertNotNull(immutablePojo.getName());
+    }
+
+
+    @Test
+    public void testLimitInnerPojoLimiters() {
+        Car car = TestPojoData.builder(Car.CarBuilder.class, Car::builder)
+                .addLimiter("speedometer.rateOfSpeed",
+                        Limiter.builder().min(0L).max(120L).build()).build().build();
+
+        assertTrue(car.getSpeedometer().getSpeed() >= 0 && car.getSpeedometer().getSpeed() <= 120);
     }
 
     private static class OurImmutableBuilderProvider implements Provider {
