@@ -25,13 +25,14 @@ public class PojoBuilder {
 
     private final List<Generator> generators;
     private final List<Provider> providers;
+    private final Map<Class, ProviderFunction> providerFunctions;
     private final Class<?> clazz;
-    private final ProviderFunction providerFunction;
     private final Map<Field, Limiter> limiters;
 
     public PojoBuilder(PojoBuilderConfiguration configuration) {
         this.clazz = configuration.getClazz();
-        this.providerFunction = configuration.getProviderFunction();
+        this.providerFunctions = new HashMap<>();
+        this.providerFunctions.putAll(configuration.getProviderFunctions());
         this.limiters = new HashMap<>();
         this.generators = new ArrayList<>();
 
@@ -124,7 +125,8 @@ public class PojoBuilder {
         try {
 
             //check if we have a provider function
-            if(providerFunction != null && clazz.equals(this.clazz)) {
+            ProviderFunction providerFunction = providerFunctions.get(clazz);
+            if(providerFunction != null) {
                 instance = providerFunction.provide();
             }
 

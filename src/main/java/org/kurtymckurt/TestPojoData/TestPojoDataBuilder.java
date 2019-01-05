@@ -15,6 +15,7 @@ public class TestPojoDataBuilder<T> {
     private final Class<T> clazz;
     private final ProviderFunction providerFunction;
     private final List<Provider> providers;
+    private final Map<Class, ProviderFunction> providerFunctions;
     private final List<Generator> customGenerators;
     private final Map<String, Limiter> fieldToLimiter;
 
@@ -27,11 +28,18 @@ public class TestPojoDataBuilder<T> {
         this.providerFunction = providerFunction;
         this.customGenerators = new ArrayList<>();
         this.providers = new ArrayList<>();
+        this.providerFunctions = new HashMap<>();
+        addProviderFunction(clazz, providerFunction);
         this.fieldToLimiter = new HashMap<>();
     }
 
-    public TestPojoDataBuilder<T> addCustomGenerator(Generator generator) {
+    public TestPojoDataBuilder<T> addGenerator(Generator generator) {
         customGenerators.add(generator);
+        return this;
+    }
+
+    public TestPojoDataBuilder<T> addProviderFunction(Class<?> clazz, ProviderFunction providerFunction) {
+        providerFunctions.put(clazz, providerFunction);
         return this;
     }
 
@@ -50,7 +58,7 @@ public class TestPojoDataBuilder<T> {
         return (T) new PojoBuilder(
                 PojoBuilderConfiguration.builder()
                         .clazz(clazz)
-                        .providerFunction(providerFunction)
+                        .providerFunctions(providerFunctions)
                         .generators(customGenerators)
                         .providers(providers)
                         .limiters(fieldToLimiter)

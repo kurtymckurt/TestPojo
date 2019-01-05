@@ -16,7 +16,8 @@ import java.util.Map;
 public class PojoBuilderConfiguration {
 
     private Class<?> clazz;
-    private ProviderFunction providerFunction;
+    @Singular
+    private Map<Class, ProviderFunction> providerFunctions;
 
     @Singular
     private List<Provider> providers;
