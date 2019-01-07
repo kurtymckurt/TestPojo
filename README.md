@@ -88,7 +88,7 @@ public void testOurImmutabilePojo (){
 
 ```
 
-You can add a provider to use for multiple class requirements.
+You can add a provider to use for multiple class requirements.  It will use the provider function given with any class associated with it.  It can take one to many.  Providing null will result in an exception.
 
 ```java
 @Value
@@ -100,6 +100,15 @@ public class ImmutablePojo {
     private final String interestingAttribute;
     private final Date birthday;
     private List<Integer> listOfNumbers;
+}
+
+@Test
+public void testOurImmutabilePojo (){
+   ImmutablePojo pojo = TestPojoData.builder(
+         ImmutablePojoBuilder.class, ImmutablePojo::builder())
+         .addProviderFunction(ImmutablePojoBuilder::builder(), ImmutablePojoBuilder.class, ImmutablePojo.class)
+      .build()
+   .build();
 }
 
 ```
