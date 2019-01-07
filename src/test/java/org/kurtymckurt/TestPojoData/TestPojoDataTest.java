@@ -8,7 +8,6 @@ import org.kurtymckurt.TestPojoData.pojo.Car;
 import org.kurtymckurt.TestPojoData.pojo.ImmutablePojo;
 import org.kurtymckurt.TestPojoData.pojo.Person;
 import org.kurtymckurt.TestPojoData.pojo.TestPojo;
-import org.kurtymckurt.TestPojoData.providers.Provider;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -130,7 +129,7 @@ public class TestPojoDataTest {
     @Test
     public void testImmutableObjectWithBuilderWithCustomProvider() {
         ImmutablePojo.ImmutablePojoBuilder immutablePojoBuilder = TestPojoData.builder(
-              ImmutablePojo.ImmutablePojoBuilder.class).addProvider(new OurImmutableBuilderProvider()).build();
+              ImmutablePojo.ImmutablePojoBuilder.class).addProviderFunction(ImmutablePojo::builder, ImmutablePojo.ImmutablePojoBuilder.class).build();
 
         ImmutablePojo immutablePojo = immutablePojoBuilder.build();
 
@@ -152,18 +151,4 @@ public class TestPojoDataTest {
 
         assertTrue(car.getSpeedometer().getSpeed() >= 0 && car.getSpeedometer().getSpeed() <= 120);
     }
-
-    private static class OurImmutableBuilderProvider implements Provider {
-
-        @Override
-        public Object provide() {
-            return ImmutablePojo.builder();
-        }
-
-        @Override
-        public boolean supportsType(Class<?> clazz) {
-            return clazz.isAssignableFrom(ImmutablePojo.ImmutablePojoBuilder.class);
-        }
-    }
-
 }

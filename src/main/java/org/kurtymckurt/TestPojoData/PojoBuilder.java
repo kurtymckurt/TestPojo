@@ -7,7 +7,6 @@ import org.kurtymckurt.TestPojoData.generators.collections.*;
 import org.kurtymckurt.TestPojoData.generators.primatives.*;
 import org.kurtymckurt.TestPojoData.generators.time.*;
 import org.kurtymckurt.TestPojoData.limiters.Limiter;
-import org.kurtymckurt.TestPojoData.providers.Provider;
 import org.kurtymckurt.TestPojoData.providers.ProviderFunction;
 import org.kurtymckurt.TestPojoData.util.LimiterUtils;
 import org.kurtymckurt.TestPojoData.util.NullSafeLimits;
@@ -24,7 +23,6 @@ import java.util.*;
 public class PojoBuilder {
 
     private final List<Generator> generators;
-    private final List<Provider> providers;
     private final Map<Class, ProviderFunction> providerFunctions;
     private final Class<?> clazz;
     private final Map<Field, Limiter> limiters;
@@ -37,13 +35,10 @@ public class PojoBuilder {
         this.generators = new ArrayList<>();
 
         verifyAndBuildLimitersMap(configuration.getLimiters());
-
-        this.providers = new ArrayList<>(configuration.getProviders());
         //Add the custom ones first in case they want
         //to override.
         this.generators.addAll(configuration.getGenerators());
         addCoreGenerators();
-
 
     }
 
@@ -130,15 +125,6 @@ public class PojoBuilder {
                 instance = providerFunction.provide();
             }
 
-            //Check providers to see if we have something to generate this
-            //bad boy for us.
-            if(instance == null) {
-                for (Provider provider : providers) {
-                    if (provider.supportsType(clazz)) {
-                        instance = provider.provide();
-                    }
-                }
-            }
             //If we didn't find a provider, try to new it up ourselves
             //this requires a no arg constructor...
             if(instance == null) {
@@ -161,6 +147,7 @@ public class PojoBuilder {
     private Object fillInstanceVariables(Object instance) {
         Field[] declaredFields = instance.getClass().getDeclaredFields();
         if(declaredFields.length == 0) return instance;
+
         for(Field f : declaredFields) {
             f.setAccessible(true);
             setField(instance, f);

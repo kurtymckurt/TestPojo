@@ -57,14 +57,15 @@ age=434679691,
 gender=Male)
 ```
 
-## Providers
+## Provider Functions
 
-There are circumstances in which TestPojoData may not be able to instantiate a new instance of the object passed to the builder.  In this situation, we can pass a provider through to give the engine a way to generate the classes as needed.
+There are circumstances in which TestPojoData may not be able to instantiate a new instance of the object passed to the builder.  In this situation, we can pass a provider function through to give the engine a way to generate the classes as needed.
 
 In the example below, we have an Immutable class that requires a builder in order to create.  Therefore, we wrote a provider that calls the method in order to generate a builder whenever the engine needs one.  Then, the engine will provide us with a builder with the filled in classes.  We may then modify and build to get our pojo.
 
 
 This example uses a provider function to provide the way to create the pojo instance if necessary.
+
 ```java
 @Value
 @Builder
@@ -87,9 +88,8 @@ public void testOurImmutabilePojo (){
 
 ```
 
+You can add a provider to use for multiple class requirements.
 
-
-This example, shows how you can do it by implementing a provider globally for pojos that do not have a no arg constructor.
 ```java
 @Value
 @Builder
@@ -102,25 +102,6 @@ public class ImmutablePojo {
     private List<Integer> listOfNumbers;
 }
 
-@Test
-public void testOurImmutabilePojo (){
-   ImmutablePojo pojo = TestPojoData.builder(ImmutablePojoBuilder.class)
-      .addProvider(new OurImmutableBuilderProvider())
-      .build()
-   .build();
-}
-
-private static class OurImmutableBuilderProvider implements Provider {
-   @Override
-   public Object provide() {
-      return ImmutablePojo.builder();
-   }
-
-   @Override
-    public boolean supportsType(Class<?> clazz) {
-      return clazz.isAssignableFrom(ImmutablePojo.ImmutablePojoBuilder.class);
-   }
-}
 ```
 
 ## Generators

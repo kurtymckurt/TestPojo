@@ -2,9 +2,9 @@ package org.kurtymckurt.TestPojoData;
 
 import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.limiters.Limiter;
-import org.kurtymckurt.TestPojoData.providers.Provider;
 import org.kurtymckurt.TestPojoData.providers.ProviderFunction;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,22 +14,20 @@ public class TestPojoDataBuilder<T> {
 
     private final Class<T> clazz;
     private final ProviderFunction providerFunction;
-    private final List<Provider> providers;
     private final Map<Class, ProviderFunction> providerFunctions;
     private final List<Generator> customGenerators;
     private final Map<String, Limiter> fieldToLimiter;
 
-    public TestPojoDataBuilder(Class<T> clazz) {
+    public TestPojoDataBuilder(@NotNull Class<T> clazz) {
         this(clazz, null);
     }
 
-    public TestPojoDataBuilder(Class<T> clazz, ProviderFunction providerFunction) {
+    public TestPojoDataBuilder(@NotNull Class<T> clazz, @NotNull ProviderFunction providerFunction) {
         this.clazz = clazz;
         this.providerFunction = providerFunction;
         this.customGenerators = new ArrayList<>();
-        this.providers = new ArrayList<>();
         this.providerFunctions = new HashMap<>();
-        addProviderFunction(clazz, providerFunction);
+        addProviderFunction(providerFunction, clazz);
         this.fieldToLimiter = new HashMap<>();
     }
 
@@ -38,13 +36,10 @@ public class TestPojoDataBuilder<T> {
         return this;
     }
 
-    public TestPojoDataBuilder<T> addProviderFunction(Class<?> clazz, ProviderFunction providerFunction) {
-        providerFunctions.put(clazz, providerFunction);
-        return this;
-    }
-
-    public TestPojoDataBuilder<T> addProvider(Provider provider) {
-        providers.add(provider);
+    public TestPojoDataBuilder<T> addProviderFunction(@NotNull ProviderFunction providerFunction, @NotNull Class<?> ... clazzes) {
+        for (Class<?> aClass : clazzes) {
+            providerFunctions.put(aClass, providerFunction);
+        }
         return this;
     }
 
@@ -60,7 +55,6 @@ public class TestPojoDataBuilder<T> {
                         .clazz(clazz)
                         .providerFunctions(providerFunctions)
                         .generators(customGenerators)
-                        .providers(providers)
                         .limiters(fieldToLimiter)
                         .build())
                 .buildObject();

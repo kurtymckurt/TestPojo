@@ -5,7 +5,6 @@ import lombok.Singular;
 import lombok.Value;
 import org.kurtymckurt.TestPojoData.generators.Generator;
 import org.kurtymckurt.TestPojoData.limiters.Limiter;
-import org.kurtymckurt.TestPojoData.providers.Provider;
 import org.kurtymckurt.TestPojoData.providers.ProviderFunction;
 
 import java.util.List;
@@ -18,9 +17,6 @@ public class PojoBuilderConfiguration {
     private Class<?> clazz;
     @Singular
     private Map<Class, ProviderFunction> providerFunctions;
-
-    @Singular
-    private List<Provider> providers;
 
     @Singular
     private List<Generator> generators;
