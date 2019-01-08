@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 
 public class StringGenerator implements Generator {
 
-    private final String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456780";
+    private static final String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456780";
 
     @Override
     public Object generate(Class<?> clazz, Field field, Limiter limiter) {
