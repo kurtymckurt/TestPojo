@@ -13,7 +13,10 @@
     <name>TestPojo</name>
     <description>This library generates pojos with data for testing within an integration testing frameworks.</description>
     <url>https://github.com/kurtymckurt/TestPojo</url>
-
+    <scm>
+        <connection>scm:git:https://github.com/kurtymckurt/TestPojo</connection>
+        <url>https://github.com/kurtymckurt/TestPojo</url>
+    </scm>
     <licenses>
         <license>
             <name>MIT-License</name>
@@ -31,6 +34,14 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.11.1</version>
+                <configuration>
+                    <connectionType>connection</connectionType>
                 </configuration>
             </plugin>
         </plugins>
