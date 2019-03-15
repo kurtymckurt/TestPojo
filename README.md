@@ -1,8 +1,8 @@
-# TestPojoData
+# TestPojo
 
 ## Description
-This project's sole purpose is to generate data
-for pojos for testing within an integration testing
+This project's sole purpose is to generate 
+for pojos with data for testing within an integration testing
 frameworks.  
 
 For example, if you had a `Person` class that has
@@ -45,7 +45,7 @@ public enum Gender {
 
 @Test
 public void testPojos {
-    Person person = TestPojoData.builder(Person.class).build();
+    Person person = TestPojo.builder(Person.class).build();
 }
 ```
 
@@ -59,7 +59,7 @@ gender=Male)
 
 ## Provider Functions
 
-There are circumstances in which TestPojoData may not be able to instantiate a new instance of the object passed to the builder.  In this situation, we can pass a provider function through to give the engine a way to generate the classes as needed.
+There are circumstances in which TestPojo may not be able to instantiate a new instance of the object passed to the builder.  In this situation, we can pass a provider function through to give the engine a way to generate the classes as needed.
 
 In the example below, we have an Immutable class that requires a builder in order to create.  Therefore, we wrote a provider that calls the method in order to generate a builder whenever the engine needs one.  Then, the engine will provide us with a builder with the filled in classes.  We may then modify and build to get our pojo.
 
@@ -80,7 +80,7 @@ public class ImmutablePojo {
 
 @Test
 public void testOurImmutabilePojo (){
-   ImmutablePojo pojo = TestPojoData.builder(
+   ImmutablePojo pojo = TestPojo.builder(
          ImmutablePojoBuilder.class, ImmutablePojo::builder())
       .build()
    .build();
@@ -104,7 +104,7 @@ public class ImmutablePojo {
 
 @Test
 public void testOurImmutabilePojo (){
-   ImmutablePojo pojo = TestPojoData.builder(
+   ImmutablePojo pojo = TestPojo.builder(
          ImmutablePojoBuilder.class, ImmutablePojo::builder())
          .addProviderFunction(ImmutablePojoBuilder::builder(), ImmutablePojoBuilder.class, ImmutablePojo.class)
       .build()
@@ -116,9 +116,9 @@ public void testOurImmutabilePojo (){
 ## Generators
 Generators are the core classes that provide the "random" values that fill in the datatypes.  You'll find a variety of already provided generators for Integer, Long, Float, Short, etc.  There are also generators provided for Collections.
 
-You may provide custom generators through the TestPojoDataBuilder in order to supply custom datatypes that aren't already provided.
+You may provide custom generators through the TestPojoBuilder in order to supply custom datatypes that aren't already provided.
 
-For example, the core TestPojoData doesn't provide a Generator for JodaTime classes.  This is because TestPojoData doesn't want a 3rd party dependency of JodaTime.
+For example, the core TestPojo doesn't provide a Generator for JodaTime classes.  This is because TestPojo doesn't want a 3rd party dependency of JodaTime.
 
 Each generator will be passed a limiter when executed so that it may honor these limits if applicable. See Limiter section for more details.
 
@@ -127,7 +127,7 @@ Example of how to use a custom generator
 
 @Test
 public void realisticTest() {
-    Person person = TestPojoData.builder(Person.class
+    Person person = TestPojo.builder(Person.class
     ).addCustomGenerator(new JodaTimeGenerator())  //Here's our custom generator
     .build();
     
@@ -174,7 +174,7 @@ For example, what if our pojo is a person and their age should reasonably be bet
 
 @Test
 public void realisticTest() {
-    Person person = TestPojoData.builder(Person.class)
+    Person person = TestPojo.builder(Person.class)
     .addLimiter(
             "age", 
             Limiter.builder()
@@ -210,7 +210,7 @@ public class Speedometer {
 public class TestCar {
     @Test
     public void testLimitInnerPojoLimiters() {
-        Car car = TestPojoData.builder(Car.CarBuilder.class, Car::builder)
+        Car car = TestPojo.builder(Car.CarBuilder.class, Car::builder)
                 .addLimiter("speedometer.speed",
                         Limiter.builder().min(0L).max(120L).build()).build().build();
 
@@ -228,7 +228,7 @@ If there is a problem with the name of the variable when specifying a limiter, w
 public class TestCar {
     @Test
     public void testLimitInnerPojoLimiters() {
-        Car car = TestPojoData.builder(Car.CarBuilder.class, Car::builder)
+        Car car = TestPojo.builder(Car.CarBuilder.class, Car::builder)
                 .addLimiter("speedometer.rateOfSpeed",  // incorrect field name
                         Limiter.builder().min(0L).max(120L).build()).build().build();
 
@@ -239,12 +239,12 @@ public class TestCar {
 
 This incorrect field name will produce the following stacktrace.
 ```java
-org.kurtymckurt.TestPojoData.exceptions.NoSuchFieldException: No such field[rateOfSpeed] for class[org.kurtymckurt.TestPojoData.pojo.Speedometer]
+org.kurtymckurt.TestPojo.exceptions.NoSuchFieldException: No such field[rateOfSpeed] for class[org.kurtymckurt.TestPojo.pojo.Speedometer]
 
-	at org.kurtymckurt.TestPojoData.PojoBuilder.verifyAndBuildLimitersMapHelper(PojoBuilder.java:69)
-	at org.kurtymckurt.TestPojoData.PojoBuilder.verifyAndBuildLimitersMapHelper(PojoBuilder.java:64)
-	at org.kurtymckurt.TestPojoData.PojoBuilder.verifyAndBuildLimitersMap(PojoBuilder.java:55)
-	at org.kurtymckurt.TestPojoData.PojoBuilder.<init>(PojoBuilder.java:36)
+	at org.kurtymckurt.TestPojo.PojoBuilder.verifyAndBuildLimitersMapHelper(PojoBuilder.java:69)
+	at org.kurtymckurt.TestPojo.PojoBuilder.verifyAndBuildLimitersMapHelper(PojoBuilder.java:64)
+	at org.kurtymckurt.TestPojo.PojoBuilder.verifyAndBuildLimitersMap(PojoBuilder.java:55)
+	at org.kurtymckurt.TestPojo.PojoBuilder.<init>(PojoBuilder.java:36)
     ...
 ```
 

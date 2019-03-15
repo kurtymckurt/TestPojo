@@ -5,9 +5,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.kurtymckurt</groupId>
-    <artifactId>TestPojoData</artifactId>
+    <artifactId>TestPojo</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+
+    <name>TestPojo</name>
+    <description>This library generates pojos with data for testing within an integration testing frameworks.</description>
+    <url>https://github.com/kurtymckurt/TestPojo</url>
+
+    <licenses>
+        <license>
+            <name>MIT-License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <build>
         <plugins>
