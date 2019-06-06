@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 
 @Data
-public class TestPojo {
+public class TestingPojo {
 
     //Objects
     private String name;
@@ -45,4 +45,6 @@ public class TestPojo {
     private Boolean booleanObjectValue;
     private Double doubleObjectValue;
     private Byte byteObjectValue;
+
+    private Integer ignoreMe;
 }

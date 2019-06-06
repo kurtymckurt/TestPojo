@@ -13,4 +13,5 @@ public class AnotherPojo {
     private Integer size;
     private State state;
     private Date date;
+    private Car car;
 }

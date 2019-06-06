@@ -4,11 +4,7 @@ import org.kurtymckurt.TestPojo.generators.Generator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.providers.ProviderFunction;
 
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TestPojoBuilder<T> {
 
@@ -17,18 +13,20 @@ public class TestPojoBuilder<T> {
     private final Map<Class, ProviderFunction> providerFunctions;
     private final List<Generator> customGenerators;
     private final Map<String, Limiter> fieldToLimiter;
+    private final Set<String> excludedFields;
 
-    public TestPojoBuilder(@NotNull Class<T> clazz) {
+    public TestPojoBuilder(Class<T> clazz) {
         this(clazz, null);
     }
 
-    public TestPojoBuilder(@NotNull Class<T> clazz, @NotNull ProviderFunction providerFunction) {
+    public TestPojoBuilder(Class<T> clazz, ProviderFunction providerFunction) {
         this.clazz = clazz;
         this.providerFunction = providerFunction;
         this.customGenerators = new ArrayList<>();
         this.providerFunctions = new HashMap<>();
         addProviderFunction(providerFunction, clazz);
         this.fieldToLimiter = new HashMap<>();
+        this.excludedFields = new HashSet<>();
     }
 
     public TestPojoBuilder<T> addGenerator(Generator generator) {
@@ -36,7 +34,7 @@ public class TestPojoBuilder<T> {
         return this;
     }
 
-    public TestPojoBuilder<T> addProviderFunction(@NotNull ProviderFunction providerFunction, @NotNull Class<?> ... clazzes) {
+    public TestPojoBuilder<T> addProviderFunction(ProviderFunction providerFunction, Class<?> ... clazzes) {
         for (Class<?> aClass : clazzes) {
             providerFunctions.put(aClass, providerFunction);
         }
@@ -48,6 +46,11 @@ public class TestPojoBuilder<T> {
         return this;
     }
 
+    public TestPojoBuilder<T> addExcludedField(String fieldName) {
+        this.excludedFields.add(fieldName);
+        return this;
+    }
+
     @SuppressWarnings(value="yeah, suppress this for now")
     public T build() {
         return (T) new PojoBuilder(
@@ -56,6 +59,7 @@ public class TestPojoBuilder<T> {
                         .providerFunctions(providerFunctions)
                         .generators(customGenerators)
                         .limiters(fieldToLimiter)
+                        .excludedFields(excludedFields)
                         .build())
                 .buildObject();
     }

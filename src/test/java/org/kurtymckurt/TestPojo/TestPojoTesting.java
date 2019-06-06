@@ -7,64 +7,72 @@ import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.pojo.Car;
 import org.kurtymckurt.TestPojo.pojo.ImmutablePojo;
 import org.kurtymckurt.TestPojo.pojo.Person;
+import org.kurtymckurt.TestPojo.pojo.TestingPojo;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPojoTest {
+public class TestPojoTesting {
 
     @Test
     public void testBasicPojo() {
-        org.kurtymckurt.TestPojo.pojo.TestPojo testPojo = TestPojo.builder(org.kurtymckurt.TestPojo.pojo.TestPojo.class)
+        TestingPojo testingPojo = TestPojo.builder(TestingPojo.class)
                 .addLimiter(
                         "anotherPojo.size", Limiter.builder()
                                 .min(0L)
                                 .max(1000L)
-                                .build()
-                )
+                                .build())
+                .addLimiter("anotherPojo.car.make", Limiter.builder()
+                        .length(5)
+                        .build())
                 .addLimiter("somethingElse",
                         Limiter.builder()
                             .min(0L)
                             .max(9000L)
                             .length(20)
                                 .build())
+                .addExcludedField("ignoreMe")
+                .addExcludedField("anotherPojo.car.speedometer")
+                .addProviderFunction(() -> Car.builder().build(), Car.class)
                 .build();
 
         //Test objects
-        assertNotNull(testPojo.getName());
-        assertNotNull(testPojo.getAddress());
+        assertNotNull(testingPojo.getName());
+        assertNotNull(testingPojo.getAddress());
 
         //Test objects
-        assertNotNull(testPojo.getBooleanObjectValue());
-        assertNotNull(testPojo.getByteObjectValue());
-        assertNotNull(testPojo.getDoubleObjectValue());
-        assertNotNull(testPojo.getIntObjectValue());
-        assertNotNull(testPojo.getShortObjectValue());
-        assertNotNull(testPojo.getLongObjectValue());
-        assertNotNull(testPojo.getMapOfIdentifiersToLong());
-        assertNotNull(testPojo.getMapOfLongToPersons());
-        assertNotNull(testPojo.getConcurrentMapOfIdentifiersToLong());
-        assertNotNull(testPojo.getNavigableSetOfPeople());
-        assertNotNull(testPojo.getNavigableMap());
-        assertNotNull(testPojo.getQueue());
-        assertNotNull(testPojo.getDeque());
-        assertNotNull(testPojo.getIterable());
+        assertNotNull(testingPojo.getBooleanObjectValue());
+        assertNotNull(testingPojo.getByteObjectValue());
+        assertNotNull(testingPojo.getDoubleObjectValue());
+        assertNotNull(testingPojo.getIntObjectValue());
+        assertNotNull(testingPojo.getShortObjectValue());
+        assertNotNull(testingPojo.getLongObjectValue());
+        assertNotNull(testingPojo.getMapOfIdentifiersToLong());
+        assertNotNull(testingPojo.getMapOfLongToPersons());
+        assertNotNull(testingPojo.getConcurrentMapOfIdentifiersToLong());
+        assertNotNull(testingPojo.getNavigableSetOfPeople());
+        assertNotNull(testingPojo.getNavigableMap());
+        assertNotNull(testingPojo.getQueue());
+        assertNotNull(testingPojo.getDeque());
+        assertNotNull(testingPojo.getIterable());
 
-        assertTrue(testPojo.getAnotherPojo().getSize() >= 0 && testPojo.getAnotherPojo().getSize() <= 1000);
-        assertTrue(testPojo.getNavigableMap().size() > 0);
-        assertTrue(testPojo.getQueue().size() > 0);
-        assertTrue(testPojo.getDeque().size() > 0);
-        assertTrue(testPojo.getNavigableSetOfPeople().size() > 0);
-        assertTrue(testPojo.getMapOfIdentifiersToLong().size() > 0);
-        assertTrue(testPojo.getMapOfLongToPersons().size() > 0);
-        assertTrue(testPojo.getConcurrentMapOfIdentifiersToLong().size() > 0);
+        assertTrue(testingPojo.getAnotherPojo().getSize() >= 0 && testingPojo.getAnotherPojo().getSize() <= 1000);
+        assertTrue(testingPojo.getAnotherPojo().getCar().getMake().length() == 5);
+        assertTrue(testingPojo.getNavigableMap().size() > 0);
+        assertTrue(testingPojo.getQueue().size() > 0);
+        assertTrue(testingPojo.getDeque().size() > 0);
+        assertTrue(testingPojo.getNavigableSetOfPeople().size() > 0);
+        assertTrue(testingPojo.getMapOfIdentifiersToLong().size() > 0);
+        assertTrue(testingPojo.getMapOfLongToPersons().size() > 0);
+        assertTrue(testingPojo.getConcurrentMapOfIdentifiersToLong().size() > 0);
 
-        assertTrue(testPojo.getSomethingElse().length == 20);
-        for(int i = 0; i < testPojo.getSomethingElse().length; i++) {
-            assertTrue(testPojo.getSomethingElse()[i] >= 0
-                    && testPojo.getSomethingElse()[i] <= 9000);
+        assertTrue(testingPojo.getSomethingElse().length == 20);
+        for(int i = 0; i < testingPojo.getSomethingElse().length; i++) {
+            assertTrue(testingPojo.getSomethingElse()[i] >= 0
+                    && testingPojo.getSomethingElse()[i] <= 9000);
         }
 
+        assertNull(testingPojo.getIgnoreMe());
+        assertNull(testingPojo.getAnotherPojo().getCar().getSpeedometer());
     }
 
     @Test

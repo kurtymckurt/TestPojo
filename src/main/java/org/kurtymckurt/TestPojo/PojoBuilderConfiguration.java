@@ -9,12 +9,14 @@ import org.kurtymckurt.TestPojo.providers.ProviderFunction;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Value
 @Builder
 public class PojoBuilderConfiguration {
 
     private Class<?> clazz;
+
     @Singular
     private Map<Class, ProviderFunction> providerFunctions;
 
@@ -23,5 +25,8 @@ public class PojoBuilderConfiguration {
 
     @Singular
     private Map<String, Limiter> limiters;
+
+    @Singular
+    private Set<String> excludedFields;
 
 }

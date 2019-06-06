@@ -24,24 +24,8 @@ public class RandomUtils {
         return (int)((random.nextDouble() * ((max - min) + 1)) + min);
     }
 
-    public static int getRandomInt() {
-        return getRandomIntWithinRange(Integer.MAX_VALUE);
-    }
-
-    public static String getRandomString() {
-        return UUID.randomUUID().toString();
-    }
-
-    public static Double getRandomDoubleObject() {
-        return Double.valueOf(random.nextDouble());
-    }
-
     public static Double getRandomDoubleWithinRange(double min, double max) {
         return (random.nextDouble() * ((max - min) + 1)) + min;
-    }
-
-    public static Float getRandomFloatObject() {
-        return Float.valueOf(random.nextFloat());
     }
 
     public static Float getRandomFloatWithinRange(long min, long max) {
@@ -68,10 +52,6 @@ public class RandomUtils {
         return (long)(random.nextDouble() * ((max - min) + 1)) + min;
     }
 
-    public static Short getRandomShortObject() {
-        return Short.valueOf((short)random.nextInt(Short.MAX_VALUE));
-    }
-
     public static Short getRandomShortWithinRange(long min, long max) {
         if(max > Short.MAX_VALUE) max = Short.MAX_VALUE;
         if(min < Short.MIN_VALUE) min = Short.MIN_VALUE;
@@ -92,7 +72,6 @@ public class RandomUtils {
         String uuid = UUID.randomUUID().toString();
         return uuid.charAt(getRandomIntWithinRange(uuid.length()));
     }
-
 
     public static LocalDate getRandomLocalDate() {
         return LocalDate.of(

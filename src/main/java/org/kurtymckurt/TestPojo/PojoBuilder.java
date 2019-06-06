@@ -15,6 +15,7 @@ import org.kurtymckurt.TestPojo.util.RandomUtils;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /****
  * Actually does the logic of creating the pojo using reflection.
@@ -26,6 +27,7 @@ public class PojoBuilder {
     private final Map<Class, ProviderFunction> providerFunctions;
     private final Class<?> clazz;
     private final Map<Field, Limiter> limiters;
+    private final Set<Field> excludedFields;
 
     public PojoBuilder(PojoBuilderConfiguration configuration) {
         this.clazz = configuration.getClazz();
@@ -33,6 +35,9 @@ public class PojoBuilder {
         this.providerFunctions.putAll(configuration.getProviderFunctions());
         this.limiters = new HashMap<>();
         this.generators = new ArrayList<>();
+        this.excludedFields = new HashSet<>();
+
+        verifyAndBuildExcludedFieldSet(configuration.getExcludedFields());
 
         verifyAndBuildLimitersMap(configuration.getLimiters());
         //Add the custom ones first in case they want
@@ -42,14 +47,33 @@ public class PojoBuilder {
 
     }
 
+    private void verifyAndBuildExcludedFieldSet(Set<String> fieldsToExclude) {
+        for(String field : fieldsToExclude) {
+            String[] fieldNames = field.split("\\.");
+            List<String> fieldNameList = Arrays.stream(fieldNames).collect(Collectors.toList());
+            verifyAndBuildExcludesSetHelper(clazz, fieldNameList);
+        }
+    }
+
+    private void verifyAndBuildExcludesSetHelper(Class<?> type, List<String> fieldNames) {
+        try {
+            Field declaredField = type.getDeclaredField(fieldNames.get(0));
+            if(fieldNames.size() > 1) {
+                fieldNames.remove(0);
+                verifyAndBuildExcludesSetHelper(declaredField.getType(), fieldNames);
+            } else {
+                excludedFields.add(declaredField);
+            }
+        } catch (java.lang.NoSuchFieldException e) {
+            throw new NoSuchFieldException(fieldNames.get(0), type, e);
+        }
+    }
+
     private void verifyAndBuildLimitersMap(Map<String, Limiter> limiters) {
         Set<Map.Entry<String, Limiter>> entries =  limiters.entrySet();
         for (Map.Entry<String, Limiter> entry : entries) {
             String[] fieldNames = entry.getKey().split("\\.");
-            List<String> fieldNameList = new LinkedList<>();
-            for (String field : fieldNames) {
-                fieldNameList.add(field);
-            }
+            List<String> fieldNameList = Arrays.stream(fieldNames).collect(Collectors.toList());
             verifyAndBuildLimitersMapHelper(clazz, fieldNameList, entry.getValue());
         }
     }
@@ -149,6 +173,10 @@ public class PojoBuilder {
         if(declaredFields.length == 0) return instance;
 
         for(Field f : declaredFields) {
+            if(excludedFields.contains(f)) {
+                log.debug("[*] Skipping due to exclusion. field name: {}, field: {}.", f.getName(), f.getType());
+                continue;
+            }
             f.setAccessible(true);
             setField(instance, f);
         }
