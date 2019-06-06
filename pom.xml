@@ -15,7 +15,19 @@
         <connection>scm:git:https://github.com/kurtymckurt/TestPojo</connection>
         <url>https://github.com/kurtymckurt/TestPojo</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <licenses>
         <license>
             <name>MIT-License</name>
