@@ -14,11 +14,11 @@ public class StringGenerator implements Generator {
     @Override
     public Object generate(Class<?> clazz, Field field, Limiter limiter) {
 
-        if (limiter.getRegex() == null) {
-            return getStringBasedOnSizeLimits(limiter);
-        } else {
+        if (limiter != null && limiter.getRegex() != null) {
             Generex generex = new Generex(limiter.getRegex());
             return generex.random();
+        } else {
+            return getStringBasedOnSizeLimits(limiter);
         }
     }
 

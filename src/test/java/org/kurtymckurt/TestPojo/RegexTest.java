@@ -34,8 +34,5 @@ public class RegexTest {
     public class RegexObject {
         private String cve;
         private String cwe;
-        public RegexObject() {
-
-        }
     }
 }

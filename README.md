@@ -16,6 +16,7 @@ doesn't support the complex data type.
 * Supports all primitives and Object number types
 * Supports Enums and Arrays
 * Recursive POJO support
+* Supports regex generations for strings
 * Has support for Generators
     * This is how you would generate a single low level type
         * I.E. Date, DateTime, Integer, etc.
@@ -166,6 +167,7 @@ For collections, you can specify:
 
 For strings, you can specify:
 * length
+* regex
 
 For example, what if our pojo is a person and their age should reasonably be between 1 and 100? See the example below:
 
@@ -219,6 +221,35 @@ public class TestCar {
 
 ```
 
+#### Regex generation
+If there is a particular pattern that you need your strings in, it now allows a regex on 
+the limiter that will generate a string of that format.  BE AWARE, the more complex
+the regex, the longer it could take to generate.
+
+```java
+    @Data
+    public class RegexObject {
+        private String cve;
+        private String cwe;
+    }
+
+    RegexObject regexTestObject = TestPojo.builder(RegexObject.class)
+                .addLimiter("cve",
+                        Limiter.builder()
+                                .regex("CVE-\\d\\d\\d\\d-[0-9]{4,7}")
+                                .build())
+                .addLimiter("cwe",
+                        Limiter.builder()
+                                .regex("CWE-[0-9]{4}")
+                                .build())
+                .addProviderFunction(RegexObject::new, RegexObject.class)
+                .build();
+```
+
+Output:
+```java
+RegexTest.RegexObject(cve=CVE-5820-84220, cwe=CWE-5879)
+```
 #### Exception
 
 If there is a problem with the name of the variable when specifying a limiter, we will fail fast.  The library will throw a NoSuchFieldException and state which class it believes should've had that field.
