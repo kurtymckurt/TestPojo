@@ -1,9 +1,8 @@
 # TestPojo
 
 ## Description
-This project's sole purpose is to generate 
-for pojos with data for testing within an integration testing
-frameworks.  
+This project's sole purpose is to generate pojos with data for testing within an integration testing
+framework.  
 
 For example, if you had a `Person` class that has
 a lot of instance variables, it's a pain to generate 
@@ -253,3 +252,5 @@ org.kurtymckurt.TestPojo.exceptions.NoSuchFieldException: No such field[rateOfSp
 * Fully Support collections
 * Ranges on field values
     * I.E. int age field with value 434679691 may break in a service method
+    
+[![DepShield Badge](https://depshield.sonatype.org/badges/owner/repository/depshield.svg)](https://depshield.github.io)
