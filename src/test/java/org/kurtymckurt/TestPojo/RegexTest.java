@@ -1,8 +1,6 @@
 package org.kurtymckurt.TestPojo;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 

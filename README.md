@@ -12,6 +12,15 @@ You should only have to implement anything extra for extreme
 cases where a no arg constructor isn't available or a generator
 doesn't support the complex data type.
 
+## Importing into your project
+```xml
+<dependency>
+  <groupId>org.kurtymckurt</groupId>
+  <artifactId>TestPojo</artifactId>
+  <version>1.4</version>
+</dependency>
+```
+
 ## Features
 * Supports all primitives and Object number types
 * Supports Enums and Arrays
@@ -25,7 +34,8 @@ doesn't support the complex data type.
         * I.E. Immutable objects for example.
 * Has support for basic limiters
     * This is how you can limit how big collections get or ranges for numbers       
-        
+
+
 See test package for examples.
 
 ## Example:
