@@ -1,5 +1,6 @@
 package org.kurtymckurt.TestPojo.generators.primatives;
 
+import com.mifmif.common.regex.Generex;
 import org.kurtymckurt.TestPojo.generators.Generator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
@@ -12,17 +13,28 @@ public class StringGenerator implements Generator {
 
     @Override
     public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+
+        if (limiter.getRegex() == null) {
+            return getStringBasedOnSizeLimits(limiter);
+        } else {
+            Generex generex = new Generex(limiter.getRegex());
+            return generex.random();
+        }
+    }
+
+    private String getStringBasedOnSizeLimits(Limiter limiter) {
         long min = 1;
         long max = 100;
         long length = RandomUtils.getRandomIntWithinRange(min, max);
-        if(limiter != null) {
-            if(limiter.getMin() != null) {
+        boolean hasLimiter = limiter != null;
+        if (hasLimiter) {
+            if (limiter.getMin() != null) {
                 min = limiter.getMin();
             }
-            if(limiter.getMax() != null) {
+            if (limiter.getMax() != null) {
                 max = limiter.getMax();
             }
-            if(limiter.getLength() != null) {
+            if (limiter.getLength() != null) {
                 length = limiter.getLength();
             } else {
                 length = RandomUtils.getRandomIntWithinRange(min, max);
@@ -31,6 +43,7 @@ public class StringGenerator implements Generator {
 
         return getChars(length);
     }
+
 
     private String getChars(long length) {
         StringBuilder builder = new StringBuilder();

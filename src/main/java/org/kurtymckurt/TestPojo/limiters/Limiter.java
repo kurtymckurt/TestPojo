@@ -10,4 +10,5 @@ public class Limiter {
    private Integer size;    // Collections
    private Long min;     // Numbers
    private Long max;     // Numbers
+   private String regex;  //For string generation
 }

@@ -159,9 +159,9 @@ public class PojoBuilder {
             log.debug("[*] attempting to fill the object {}.", instance);
             instance = fillInstanceVariables(instance);
         } catch (InstantiationException e) {
-            log.debug("Problems instantiating the object", e);
+            log.info("Problems instantiating the object", e);
         } catch (IllegalAccessException e) {
-            log.debug("Problems accessing properties on the object", e);
+            log.info("Problems accessing properties on the object", e);
         }
 
         log.debug("[*] completed object: {}", instance);
