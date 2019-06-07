@@ -253,4 +253,4 @@ org.kurtymckurt.TestPojo.exceptions.NoSuchFieldException: No such field[rateOfSp
 * Ranges on field values
     * I.E. int age field with value 434679691 may break in a service method
     
-[![DepShield Badge](https://depshield.sonatype.org/badges/owner/repository/depshield.svg)](https://depshield.github.io)
+[![DepShield Badge](https://depshield.sonatype.org/badges/kurtymckurt/TestPojo/depshield.svg)](https://depshield.github.io)
