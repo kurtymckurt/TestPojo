@@ -16,8 +16,7 @@
         <url>https://github.com/kurtymckurt/TestPojo</url>
       <tag>HEAD</tag>
     </scm>
-
-    ...
+    
     <developers>
         <developer>
             <id>kurtymckurt</id>
