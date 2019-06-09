@@ -12,11 +12,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public abstract class GenericMapGenerator implements Generator {
+public abstract class GenericMapGenerator<K,V> implements Generator<Map<K,V>> {
     @Override
-    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+    public Map<K,V> generate(Class<?> clazz, Field field, Limiter limiter) {
 
-        Map<Object,Object> map = createInstance();
+        Map<K,V> map = createInstance();
         Type[] actualTypeArguments = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
         Class<?> key = (Class<?>)actualTypeArguments[0];
         Class<?> value = (Class<?>) actualTypeArguments[1];
@@ -32,7 +32,7 @@ public abstract class GenericMapGenerator implements Generator {
 
         NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, limiter);
         for(int i = 0; i < nullSafeLimits.size; i++){
-            map.put(keyBuilder.buildObject(), valueBuilder.buildObject());
+            map.put( (K) keyBuilder.buildObject(), (V) valueBuilder.buildObject());
         }
 
         return map;

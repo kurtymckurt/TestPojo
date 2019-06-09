@@ -11,10 +11,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
-public abstract class GenericCollectionGenerator implements Generator {
+public abstract class GenericCollectionGenerator<T> implements Generator<Collection<T>> {
     @Override
-    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
-        Collection<Object> instance = createInstance();
+    public Collection<T> generate(Class<?> clazz, Field field, Limiter limiter) {
+        Collection<T> instance = createInstance();
         Class<?> newClazz = (Class<?>)((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
         PojoBuilder pojoBuilder = new PojoBuilder(
                 PojoBuilderConfiguration.builder()
@@ -22,7 +22,7 @@ public abstract class GenericCollectionGenerator implements Generator {
                         .build());
         NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(1, 100, limiter);
         for(int i = 0; i < nullSafeLimits.size; i++){
-            instance.add(pojoBuilder.buildObject());
+            instance.add( (T) pojoBuilder.buildObject());
         }
 
         return instance;

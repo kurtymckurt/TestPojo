@@ -8,9 +8,9 @@ import java.lang.reflect.Field;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class ZonedDateTimeGenerator implements Generator {
+public class ZonedDateTimeGenerator implements Generator<ZonedDateTime> {
    @Override
-   public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+   public ZonedDateTime generate(Class<?> clazz, Field field, Limiter limiter) {
 
 
       String[] zones = ZoneId.getAvailableZoneIds().toArray(new String[ZoneId.getAvailableZoneIds().size()]);

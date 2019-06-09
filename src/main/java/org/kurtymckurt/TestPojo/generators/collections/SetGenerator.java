@@ -3,7 +3,7 @@ package org.kurtymckurt.TestPojo.generators.collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SetGenerator extends GenericCollectionGenerator {
+public class SetGenerator<T> extends GenericCollectionGenerator<T> {
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -11,7 +11,7 @@ public class SetGenerator extends GenericCollectionGenerator {
     }
 
     @Override
-    Set createInstance() {
+    Set<T> createInstance() {
         return new HashSet<>();
     }
 }

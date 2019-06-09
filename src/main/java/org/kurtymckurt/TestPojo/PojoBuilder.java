@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * Actually does the logic of creating the pojo using reflection.
  */
 @Slf4j
-public class PojoBuilder {
+public class PojoBuilder<T> {
 
     private final List<Generator> generators;
     private final Map<Class, ProviderFunction> providerFunctions;
@@ -125,16 +125,16 @@ public class PojoBuilder {
         generators.add(new OffsetDateTimeGenerator());
     }
 
-    public Object buildObject() {
+    public T buildObject() {
         return buildObject(clazz);
     }
 
-    private Object buildObject(Class<?> clazz) {
+    private T buildObject(Class<?> clazz) {
         //First see if the object is just one we can generate from
         //our generators.
         for(Generator generator : generators) {
             if(generator.supportsType(clazz)){
-                return generator.generate(clazz, null, null);
+                return (T) generator.generate(clazz, null, null);
             }
         }
 
@@ -165,7 +165,7 @@ public class PojoBuilder {
         }
 
         log.debug("[*] completed object: {}", instance);
-        return instance;
+        return (T) instance;
     }
 
     private Object fillInstanceVariables(Object instance) {
@@ -190,17 +190,17 @@ public class PojoBuilder {
 
             //Gotta try the primitives
             if (type.isAssignableFrom(Integer.TYPE)) {
-                f.setInt(instance, (int) new IntegerGenerator().generate(type, f, limiters.get(f)));
+                f.setInt(instance, new IntegerGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Double.TYPE)) {
-                f.setDouble(instance, (double) new DoubleGenerator().generate(type, f, limiters.get(f)));
+                f.setDouble(instance, new DoubleGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Long.TYPE)) {
-                f.setLong(instance, (long) new LongGenerator().generate(type, f, limiters.get(f)));
+                f.setLong(instance, new LongGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Float.TYPE)) {
-                f.setFloat(instance, (float) new FloatGenerator().generate(type, f, limiters.get(f)));
+                f.setFloat(instance, new FloatGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Byte.TYPE)) {
                 f.setByte(instance, RandomUtils.getRandomByte());
             } else if (type.isAssignableFrom(Short.TYPE)) {
-                f.setShort(instance, (short) new ShortGenerator().generate(type, f, limiters.get(f)));
+                f.setShort(instance, new ShortGenerator().generate(type, f, limiters.get(f)));
             } else if (type.isAssignableFrom(Boolean.TYPE)) {
                 f.setBoolean(instance, RandomUtils.getRandomBoolean());
             } else if (type.isAssignableFrom(Character.TYPE)) {
@@ -245,15 +245,15 @@ public class PojoBuilder {
 
             //Primitives
             if (type.isAssignableFrom(Integer.TYPE)) {
-                Array.setInt(arr, i, (int) new IntegerGenerator().generate(type, null, limiter));
+                Array.setInt(arr, i, new IntegerGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Double.TYPE)) {
-                Array.setDouble(arr, i, (double) new DoubleGenerator().generate(type, null, limiter));
+                Array.setDouble(arr, i, new DoubleGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Float.TYPE)) {
-                Array.setFloat(arr, i, (float) new FloatGenerator().generate(type, null, limiter));
+                Array.setFloat(arr, i, new FloatGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Long.TYPE)) {
-                Array.setLong(arr, i, (long) new LongGenerator().generate(type, null, limiter));
+                Array.setLong(arr, i, new LongGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Short.TYPE)) {
-                Array.setShort(arr, i, (short) new ShortGenerator().generate(type, null, limiter));
+                Array.setShort(arr, i, new ShortGenerator().generate(type, null, limiter));
             } else if (type.isAssignableFrom(Byte.TYPE)) {
                 Array.setByte(arr, i, RandomUtils.getRandomByte());
             } else if (type.isAssignableFrom(Character.TYPE)) {

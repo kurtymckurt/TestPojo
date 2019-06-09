@@ -6,10 +6,10 @@ import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.Field;
 
-public class CharacterGenerator implements Generator {
+public class CharacterGenerator implements Generator<Character> {
 
     @Override
-    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+    public Character generate(Class<?> clazz, Field field, Limiter limiter) {
         return RandomUtils.getRandomCharacter();
     }
 

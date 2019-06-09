@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-public class NavigableMapGenerator extends GenericMapGenerator {
+public class NavigableMapGenerator<K,V> extends GenericMapGenerator<K,V> {
 
 
    @Override public boolean supports(Class<?> clazz) {

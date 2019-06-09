@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ListGenerator extends GenericCollectionGenerator {
+public class ListGenerator<T> extends GenericCollectionGenerator<Collection<T>> {
 
     @Override
     boolean supports(Class<?> clazz) {

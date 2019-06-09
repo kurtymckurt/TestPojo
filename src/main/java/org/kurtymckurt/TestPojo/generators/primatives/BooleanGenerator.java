@@ -6,10 +6,10 @@ import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.Field;
 
-public class BooleanGenerator implements Generator {
+public class BooleanGenerator implements Generator<Boolean> {
 
     @Override
-    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+    public Boolean generate(Class<?> clazz, Field field, Limiter limiter) {
         return RandomUtils.getRandomBoolean();
     }
 

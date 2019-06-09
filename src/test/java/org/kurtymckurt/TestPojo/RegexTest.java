@@ -4,13 +4,18 @@ import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 
+import java.util.regex.Pattern;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RegexTest {
 
 
     @Test
     public void testBasicRegex() {
+        Pattern cwe = Pattern.compile("CWE-[0-9]{4}");
+        Pattern cve = Pattern.compile("CVE-\\d\\d\\d\\d-[0-9]{4,7}");
         RegexObject regexTestObject = TestPojo.builder(RegexObject.class)
                 .addLimiter("cve",
                         Limiter.builder()
@@ -24,6 +29,8 @@ public class RegexTest {
                 .build();
         assertNotNull(regexTestObject.cve);
         assertNotNull(regexTestObject.cwe);
+        assertTrue(cwe.matcher(regexTestObject.cwe).matches());
+        assertTrue(cve.matcher(regexTestObject.cve).matches());
     }
 
 

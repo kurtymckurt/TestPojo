@@ -7,9 +7,9 @@ import org.kurtymckurt.TestPojo.util.RandomUtils;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 
-public class LocalDateGenerator implements Generator {
+public class LocalDateGenerator implements Generator<LocalDate> {
    @Override
-   public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+   public LocalDate generate(Class<?> clazz, Field field, Limiter limiter) {
       return RandomUtils.getRandomLocalDate();
    }
 

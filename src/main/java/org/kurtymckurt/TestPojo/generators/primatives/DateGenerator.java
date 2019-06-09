@@ -7,10 +7,10 @@ import org.kurtymckurt.TestPojo.util.RandomUtils;
 import java.lang.reflect.Field;
 import java.util.Date;
 
-public class DateGenerator implements Generator {
+public class DateGenerator implements Generator<Date> {
 
     @Override
-    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+    public Date generate(Class<?> clazz, Field field, Limiter limiter) {
 
         Date date = new Date(Math.abs(RandomUtils.getRandomLongObject()));
         return date;

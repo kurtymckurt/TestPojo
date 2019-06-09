@@ -6,10 +6,10 @@ import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.Field;
 
-public class ShortGenerator implements Generator {
+public class ShortGenerator implements Generator<Short> {
 
     @Override
-    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+    public Short generate(Class<?> clazz, Field field, Limiter limiter) {
         long min = Integer.MIN_VALUE;
         long max = Integer.MAX_VALUE;
         if(limiter != null) {

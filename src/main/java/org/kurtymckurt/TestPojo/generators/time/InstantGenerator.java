@@ -7,9 +7,9 @@ import org.kurtymckurt.TestPojo.util.RandomUtils;
 import java.lang.reflect.Field;
 import java.time.Instant;
 
-public class InstantGenerator implements Generator {
+public class InstantGenerator implements Generator<Instant> {
    @Override
-   public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+   public Instant generate(Class<?> clazz, Field field, Limiter limiter) {
       return Instant.ofEpochMilli(Math.abs(RandomUtils.getRandomLongObject()));
    }
 

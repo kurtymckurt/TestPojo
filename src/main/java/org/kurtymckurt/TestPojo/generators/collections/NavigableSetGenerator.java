@@ -4,7 +4,7 @@ import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class NavigableSetGenerator extends GenericCollectionGenerator {
+public class NavigableSetGenerator<T> extends GenericCollectionGenerator<T> {
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -12,7 +12,7 @@ public class NavigableSetGenerator extends GenericCollectionGenerator {
     }
 
     @Override
-    Set createInstance() {
+    Set<T> createInstance() {
         return new TreeSet<>();
     }
 }

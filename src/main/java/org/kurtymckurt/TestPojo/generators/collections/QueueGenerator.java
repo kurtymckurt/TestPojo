@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Queue;
 
-public class QueueGenerator extends GenericCollectionGenerator {
+public class QueueGenerator<T> extends GenericCollectionGenerator<T> {
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -12,7 +12,7 @@ public class QueueGenerator extends GenericCollectionGenerator {
     }
 
     @Override
-    Deque createInstance() {
+    Deque<T> createInstance() {
         return new ArrayDeque();
     }
 }

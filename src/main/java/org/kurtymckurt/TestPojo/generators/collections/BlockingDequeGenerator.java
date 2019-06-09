@@ -3,7 +3,7 @@ package org.kurtymckurt.TestPojo.generators.collections;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class BlockingDequeGenerator extends GenericCollectionGenerator {
+public class BlockingDequeGenerator<T> extends GenericCollectionGenerator<T> {
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -11,7 +11,7 @@ public class BlockingDequeGenerator extends GenericCollectionGenerator {
     }
 
     @Override
-    BlockingDeque createInstance() {
+    BlockingDeque<T> createInstance() {
         return new LinkedBlockingDeque();
     }
 }

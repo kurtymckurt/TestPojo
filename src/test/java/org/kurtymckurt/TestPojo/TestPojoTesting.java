@@ -57,13 +57,13 @@ public class TestPojoTesting {
 
         assertTrue(testingPojo.getAnotherPojo().getSize() >= 0 && testingPojo.getAnotherPojo().getSize() <= 1000);
         assertTrue(testingPojo.getAnotherPojo().getCar().getMake().length() == 5);
-        assertTrue(testingPojo.getNavigableMap().size() > 0);
-        assertTrue(testingPojo.getQueue().size() > 0);
-        assertTrue(testingPojo.getDeque().size() > 0);
-        assertTrue(testingPojo.getNavigableSetOfPeople().size() > 0);
-        assertTrue(testingPojo.getMapOfIdentifiersToLong().size() > 0);
-        assertTrue(testingPojo.getMapOfLongToPersons().size() > 0);
-        assertTrue(testingPojo.getConcurrentMapOfIdentifiersToLong().size() > 0);
+        assertTrue(testingPojo.getNavigableMap() != null && testingPojo.getNavigableMap().size() >= 0);
+        assertTrue(testingPojo.getQueue() != null && testingPojo.getQueue().size() >= 0);
+        assertTrue(testingPojo.getDeque() != null && testingPojo.getDeque().size() >= 0);
+        assertTrue(testingPojo.getNavigableSetOfPeople() != null && testingPojo.getNavigableSetOfPeople().size() >= 0);
+        assertTrue(testingPojo.getMapOfIdentifiersToLong() != null && testingPojo.getMapOfIdentifiersToLong().size() >= 0);
+        assertTrue(testingPojo.getMapOfLongToPersons() != null && testingPojo.getMapOfLongToPersons().size() >= 0);
+        assertTrue(testingPojo.getConcurrentMapOfIdentifiersToLong() != null && testingPojo.getConcurrentMapOfIdentifiersToLong().size() >= 0);
 
         assertTrue(testingPojo.getSomethingElse().length == 20);
         for(int i = 0; i < testingPojo.getSomethingElse().length; i++) {

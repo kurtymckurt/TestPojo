@@ -6,10 +6,10 @@ import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.Field;
 
-public class ByteGenerator implements Generator {
+public class ByteGenerator implements Generator<Byte> {
 
     @Override
-    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+    public Byte generate(Class<?> clazz, Field field, Limiter limiter) {
         return RandomUtils.getRandomByte();
     }
 

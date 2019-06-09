@@ -7,12 +7,12 @@ import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.Field;
 
-public class StringGenerator implements Generator {
+public class StringGenerator implements Generator<String> {
 
     private static final String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456780";
 
     @Override
-    public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+    public String generate(Class<?> clazz, Field field, Limiter limiter) {
 
         if (limiter != null && limiter.getRegex() != null) {
             Generex generex = new Generex(limiter.getRegex());
