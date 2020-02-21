@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class PojoBuilderConfiguration {
 
     private Class<?> clazz;

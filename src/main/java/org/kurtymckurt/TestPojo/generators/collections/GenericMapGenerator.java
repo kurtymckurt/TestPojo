@@ -14,7 +14,7 @@ import java.util.Map;
 
 public abstract class GenericMapGenerator<K,V> implements Generator<Map<K,V>> {
     @Override
-    public Map<K,V> generate(Class<?> clazz, Field field, Limiter limiter) {
+    public Map<K,V> generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
 
         Map<K,V> map = createInstance();
         Type[] actualTypeArguments = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
@@ -22,13 +22,15 @@ public abstract class GenericMapGenerator<K,V> implements Generator<Map<K,V>> {
         Class<?> value = (Class<?>) actualTypeArguments[1];
 
         PojoBuilder keyBuilder = new PojoBuilder(
-              PojoBuilderConfiguration.builder()
-                    .clazz(key)
-                    .build());
+                pojoBuilderConfiguration
+                     .toBuilder()
+                     .clazz(key)
+                     .build());
         PojoBuilder valueBuilder = new PojoBuilder(
-              PojoBuilderConfiguration.builder()
-                    .clazz(value)
-                    .build());
+                pojoBuilderConfiguration
+                        .toBuilder()
+                        .clazz(value)
+                        .build());
 
         NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, limiter);
         for(int i = 0; i < nullSafeLimits.size; i++){

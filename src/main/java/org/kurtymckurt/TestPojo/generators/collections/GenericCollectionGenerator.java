@@ -13,16 +13,14 @@ import java.util.Collection;
 
 public abstract class GenericCollectionGenerator<T> implements Generator<Collection<T>> {
     @Override
-    public Collection<T> generate(Class<?> clazz, Field field, Limiter limiter) {
+    public Collection<T> generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
         Collection<T> instance = createInstance();
         Class<?> newClazz = (Class<?>)((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-        PojoBuilder pojoBuilder = new PojoBuilder(
-                PojoBuilderConfiguration.builder()
-                        .clazz(newClazz)
-                        .build());
         NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(1, 100, limiter);
+
+        PojoBuilder newPojoBuilder = new PojoBuilder(pojoBuilderConfiguration.toBuilder().clazz(newClazz).build());
         for(int i = 0; i < nullSafeLimits.size; i++){
-            instance.add( (T) pojoBuilder.buildObject());
+            instance.add((T) newPojoBuilder.buildObject());
         }
 
         return instance;

@@ -1,5 +1,6 @@
 package org.kurtymckurt.TestPojo.generators.time;
 
+import org.kurtymckurt.TestPojo.PojoBuilderConfiguration;
 import org.kurtymckurt.TestPojo.generators.Generator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class LocalDateTimeGenerator implements Generator<LocalDateTime> {
    @Override
-   public LocalDateTime generate(Class<?> clazz, Field field, Limiter limiter) {
+   public LocalDateTime generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
       return RandomUtils.getRandomLocalDateTime();
    }
 
