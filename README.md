@@ -146,7 +146,7 @@ public void realisticTest() {
 
 private static class JodaTimeGenerator implements Generator {
    @Override
-   public Object generate(Class<?> clazz, Field field, Limiter limiter) {
+   public Object generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration config) {
       return DateTime.now();
    }
 
