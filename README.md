@@ -17,7 +17,7 @@ doesn't support the complex data type.
 <dependency>
   <groupId>org.kurtymckurt</groupId>
   <artifactId>TestPojo</artifactId>
-  <version>1.4</version>
+  <version>2.0</version>
 </dependency>
 ```
 
