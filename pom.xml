@@ -4,7 +4,7 @@
 
     <groupId>org.kurtymckurt</groupId>
     <artifactId>TestPojo</artifactId>
-    <version>2.1-SNAPSHOT</version>
+    <version>2.1</version>
     <packaging>jar</packaging>
 
 
@@ -14,7 +14,7 @@
     <scm>
         <connection>scm:git:https://github.com/kurtymckurt/TestPojo</connection>
         <url>https://github.com/kurtymckurt/TestPojo</url>
-      <tag>HEAD</tag>
+      <tag>TestPojo-2.1</tag>
     </scm>
     
     <developers>
