@@ -13,7 +13,7 @@ public class DateGenerator implements Generator<Date> {
     @Override
     public Date generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
 
-        Date date = new Date(Math.abs(RandomUtils.getRandomLongObject()));
+        Date date = new Date(Math.abs(pojoBuilderConfiguration.getRandomUtils().getRandomLongObject()));
         return date;
     }
 

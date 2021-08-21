@@ -21,7 +21,7 @@ public class IntegerGenerator implements Generator<Integer> {
                 max = limiter.getMax();
             }
         }
-        return RandomUtils.getRandomIntWithinRange(min, max);
+        return pojoBuilderConfiguration.getRandomUtils().getRandomIntWithinRange(min, max);
     }
 
     @Override

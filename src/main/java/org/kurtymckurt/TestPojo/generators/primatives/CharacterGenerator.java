@@ -11,7 +11,7 @@ public class CharacterGenerator implements Generator<Character> {
 
     @Override
     public Character generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
-        return RandomUtils.getRandomCharacter();
+        return pojoBuilderConfiguration.getRandomUtils().getRandomCharacter();
     }
 
     @Override

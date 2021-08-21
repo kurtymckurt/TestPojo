@@ -11,12 +11,13 @@ import java.time.ZonedDateTime;
 
 public class ZonedDateTimeGenerator implements Generator<ZonedDateTime> {
    @Override
-   public ZonedDateTime generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
-
-
+   public ZonedDateTime generate(Class<?> clazz, Field field, Limiter limiter,
+                                 PojoBuilderConfiguration pojoBuilderConfiguration) {
+      RandomUtils randomUtils = pojoBuilderConfiguration.getRandomUtils();
       String[] zones = ZoneId.getAvailableZoneIds().toArray(new String[ZoneId.getAvailableZoneIds().size()]);
       //int year, int month, int dayOfMonth, int hour, int minute, int second
-      ZonedDateTime zonedDateTime = ZonedDateTime.of(RandomUtils.getRandomLocalDateTime(), ZoneId.of(zones[RandomUtils.getRandomIntWithinRange(0, zones.length-1)]));
+      ZonedDateTime zonedDateTime = ZonedDateTime.of(randomUtils.getRandomLocalDateTime(),
+              ZoneId.of(zones[randomUtils.getRandomIntWithinRange(0, zones.length-1)]));
       return zonedDateTime;
    }
 

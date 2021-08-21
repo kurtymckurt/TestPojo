@@ -2,9 +2,11 @@ package org.kurtymckurt.TestPojo.util;
 
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 
+import java.util.Random;
+
 public class LimiterUtils {
 
-    public static NullSafeLimits getNullSafeLimits(int minDefault, int maxDefault, Limiter limiter) {
+    public static NullSafeLimits getNullSafeLimits(int minDefault, int maxDefault, Limiter limiter, RandomUtils randomUtils) {
         long min = minDefault;
         long max = maxDefault;
         Integer length = null;
@@ -29,9 +31,9 @@ public class LimiterUtils {
         }
 
         if(length == null) {
-            length = RandomUtils.getRandomIntWithinRange(min, max);
+            length = randomUtils.getRandomIntWithinRange(min, max);
         }
-        long size = RandomUtils.getRandomLongWithinRange(min,max);
+        long size = randomUtils.getRandomLongWithinRange(min,max);
 
         return NullSafeLimits.builder()
                 .length(length)

@@ -17,7 +17,7 @@ doesn't support the complex data type.
 <dependency>
   <groupId>org.kurtymckurt</groupId>
   <artifactId>TestPojo</artifactId>
-  <version>2.0</version>
+  <version>2.1</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ doesn't support the complex data type.
         * I.E. Immutable objects for example.
 * Has support for basic limiters
     * This is how you can limit how big collections get or ranges for numbers       
-
+* Has support for setting seed for reproducibility
 
 See test package for examples.
 
@@ -288,10 +288,16 @@ org.kurtymckurt.TestPojo.exceptions.NoSuchFieldException: No such field[rateOfSp
     ...
 ```
 
+## Reproducibility 
+One issue with TestPojo is that if your test fails on the CI, how can you reproduce that locally?  Well, now, upon running TestPojo, it will log the seed as an info message. Then, you can write a test with that seed set. Then, it will generate the exact pojo the CI ran.
+
+```java
+ final Car car = TestPojo.builder(Car.CarBuilder.class, Car::builder)
+                .setRandomGeneratorSeed(1000L).build().build();
+```
+
+
 ## Future improvements
-* Support DateTimes
-* Fully Support collections
-* Ranges on field values
-    * I.E. int age field with value 434679691 may break in a service method
+
     
 [![DepShield Badge](https://depshield.sonatype.org/badges/kurtymckurt/TestPojo/depshield.svg)](https://depshield.github.io)

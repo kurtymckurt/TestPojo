@@ -16,7 +16,8 @@ public abstract class GenericCollectionGenerator<T> implements Generator<Collect
     public Collection<T> generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
         Collection<T> instance = createInstance();
         Class<?> newClazz = (Class<?>)((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(1, 100, limiter);
+        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(
+                1, 100, limiter, pojoBuilderConfiguration.getRandomUtils());
 
         PojoBuilder newPojoBuilder = new PojoBuilder(pojoBuilderConfiguration.toBuilder().clazz(newClazz).build());
         for(int i = 0; i < nullSafeLimits.size; i++){

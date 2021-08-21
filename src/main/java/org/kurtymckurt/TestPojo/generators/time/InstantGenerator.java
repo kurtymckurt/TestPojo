@@ -11,7 +11,7 @@ import java.time.Instant;
 public class InstantGenerator implements Generator<Instant> {
    @Override
    public Instant generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
-      return Instant.ofEpochMilli(Math.abs(RandomUtils.getRandomLongObject()));
+      return Instant.ofEpochMilli(Math.abs(pojoBuilderConfiguration.getRandomUtils().getRandomLongObject()));
    }
 
    @Override

@@ -17,7 +17,7 @@ public class FloatGenerator implements Generator<Float> {
             min = limiter.getMin();
             max = limiter.getMax();
         }
-        return RandomUtils.getRandomFloatWithinRange(min, max);
+        return pojoBuilderConfiguration.getRandomUtils().getRandomFloatWithinRange(min, max);
     }
 
     @Override

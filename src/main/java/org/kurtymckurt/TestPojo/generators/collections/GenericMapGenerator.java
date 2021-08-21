@@ -32,7 +32,8 @@ public abstract class GenericMapGenerator<K,V> implements Generator<Map<K,V>> {
                         .clazz(value)
                         .build());
 
-        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, limiter);
+        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(
+                0, 100, limiter, pojoBuilderConfiguration.getRandomUtils());
         for(int i = 0; i < nullSafeLimits.size; i++){
             map.put( (K) keyBuilder.buildObject(), (V) valueBuilder.buildObject());
         }

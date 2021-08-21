@@ -11,7 +11,7 @@ public class TestRandomUtils {
     public void testIntWithinRange() {
         long min = 1;
         long max = 10;
-        int randomIntWithinRange = RandomUtils.getRandomIntWithinRange(min, max);
+        int randomIntWithinRange = new RandomUtils(1000).getRandomIntWithinRange(min, max);
         assertTrue(randomIntWithinRange >= min && randomIntWithinRange <= max);
     }
 
@@ -20,7 +20,7 @@ public class TestRandomUtils {
     public void testLongWithinRange() {
         long min = 1;
         long max = 100;
-        long randomLongWithinRange = RandomUtils.getRandomLongWithinRange(min, max);
+        long randomLongWithinRange = new RandomUtils(1000).getRandomLongWithinRange(min, max);
         assertTrue(randomLongWithinRange >= min && randomLongWithinRange <= max);
     }
 
@@ -28,7 +28,7 @@ public class TestRandomUtils {
     public void testLongIsExactValue() {
         long min = 15;
         long max = 15;
-        long randomLongWithinRange = RandomUtils.getRandomLongWithinRange(min, max);
+        long randomLongWithinRange = new RandomUtils(1000).getRandomLongWithinRange(min, max);
         assertTrue(randomLongWithinRange == min);
     }
 }

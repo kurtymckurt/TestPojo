@@ -56,16 +56,16 @@ public class TestPojoTesting {
         assertNotNull(testingPojo.getIterable());
 
         assertTrue(testingPojo.getAnotherPojo().getSize() >= 0 && testingPojo.getAnotherPojo().getSize() <= 1000);
-        assertTrue(testingPojo.getAnotherPojo().getCar().getMake().length() == 5);
-        assertTrue(testingPojo.getNavigableMap() != null && testingPojo.getNavigableMap().size() >= 0);
-        assertTrue(testingPojo.getQueue() != null && testingPojo.getQueue().size() >= 0);
-        assertTrue(testingPojo.getDeque() != null && testingPojo.getDeque().size() >= 0);
-        assertTrue(testingPojo.getNavigableSetOfPeople() != null && testingPojo.getNavigableSetOfPeople().size() >= 0);
-        assertTrue(testingPojo.getMapOfIdentifiersToLong() != null && testingPojo.getMapOfIdentifiersToLong().size() >= 0);
-        assertTrue(testingPojo.getMapOfLongToPersons() != null && testingPojo.getMapOfLongToPersons().size() >= 0);
-        assertTrue(testingPojo.getConcurrentMapOfIdentifiersToLong() != null && testingPojo.getConcurrentMapOfIdentifiersToLong().size() >= 0);
+        assertEquals(5, testingPojo.getAnotherPojo().getCar().getMake().length());
+        assertNotNull(testingPojo.getNavigableMap());
+        assertNotNull(testingPojo.getQueue());
+        assertNotNull(testingPojo.getDeque());
+        assertNotNull(testingPojo.getNavigableSetOfPeople());
+        assertNotNull(testingPojo.getMapOfIdentifiersToLong());
+        assertNotNull(testingPojo.getMapOfLongToPersons());
+        assertNotNull(testingPojo.getConcurrentMapOfIdentifiersToLong());
 
-        assertTrue(testingPojo.getSomethingElse().length == 20);
+        assertEquals(20, testingPojo.getSomethingElse().length);
         for(int i = 0; i < testingPojo.getSomethingElse().length; i++) {
             assertTrue(testingPojo.getSomethingElse()[i] >= 0
                     && testingPojo.getSomethingElse()[i] <= 9000);
@@ -102,8 +102,8 @@ public class TestPojoTesting {
         assertNotNull(person.getState());
         assertNotNull(person.getSomeDateTime());
         assertTrue(person.getAge() >= 0 && person.getAge() <= 100);
-        assertTrue(person.getName().length() == 10);
-        assertTrue(person.getAddress().length() == 20);
+        assertEquals(10, person.getName().length());
+        assertEquals(20, person.getAddress().length());
     }
 
     @Test
@@ -113,24 +113,21 @@ public class TestPojoTesting {
 
         ImmutablePojo immutablePojo = immutablePojoBuilder.build();
 
-        //Lets make sure this immutable object has contents.
+        //Let's make sure this immutable object has contents.
         assertNotNull(immutablePojo.getAddress());
         assertNotNull(immutablePojo.getBirthday());
         assertNotNull(immutablePojo.getInterestingAttribute());
         assertNotNull(immutablePojo.getListOfNumbers());
-        assertTrue(immutablePojo.getListOfNumbers().size() >= 0);
         assertNotNull(immutablePojo.getName());
     }
 
     @Test
     public void testExceptionThrownWhenLimiterClassIsIncorrect() {
-        Assertions.assertThrows(NoSuchFieldException.class, () -> {
-            Person p = TestPojo.builder(Person.class)
-                    .addLimiter(
-                            "age.doesn'texist", Limiter.builder().build()
-                    )
-                    .build();
-        });
+        Assertions.assertThrows(NoSuchFieldException.class, () -> TestPojo.builder(Person.class)
+                .addLimiter(
+                        "age.doesn'texist", Limiter.builder().build()
+                )
+                .build());
     }
 
     @Test
@@ -157,5 +154,27 @@ public class TestPojoTesting {
                         Limiter.builder().min(0L).max(120L).build()).build().build();
 
         assertTrue(car.getSpeedometer().getSpeed() >= 0 && car.getSpeedometer().getSpeed() <= 120);
+    }
+
+    @Test
+    public void testSeedGeneration() {
+        final Car car1 = TestPojo.builder(Car.CarBuilder.class, Car::builder)
+                .setRandomGeneratorSeed(1000L).build().build();
+
+        final Car car2 = TestPojo.builder(Car.CarBuilder.class, Car::builder)
+                .setRandomGeneratorSeed(1000L).build().build();
+
+        assertEquals(car1, car2, "Same seed, same car");
+    }
+
+    @Test
+    public void testSeedGeneration2() {
+        final Person person1 = TestPojo.builder(Person.class)
+                .setRandomGeneratorSeed(9999).build();
+
+        final Person person2 = TestPojo.builder(Person.class)
+                .setRandomGeneratorSeed(9999).build();
+
+        assertEquals(person1, person2, "Same seed, same person");
     }
 }

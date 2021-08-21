@@ -1,19 +1,22 @@
 package org.kurtymckurt.TestPojo;
 
+import lombok.extern.slf4j.Slf4j;
 import org.kurtymckurt.TestPojo.generators.Generator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.providers.ProviderFunction;
+import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.util.*;
 
+@Slf4j
 public class TestPojoBuilder<T> {
 
     private final Class<T> clazz;
-    private final ProviderFunction providerFunction;
     private final Map<Class, ProviderFunction> providerFunctions;
     private final List<Generator> customGenerators;
     private final Map<String, Limiter> fieldToLimiter;
     private final Set<String> excludedFields;
+    private long seed;
 
     public TestPojoBuilder(Class<T> clazz) {
         this(clazz, null);
@@ -21,12 +24,12 @@ public class TestPojoBuilder<T> {
 
     public TestPojoBuilder(Class<T> clazz, ProviderFunction providerFunction) {
         this.clazz = clazz;
-        this.providerFunction = providerFunction;
         this.customGenerators = new ArrayList<>();
         this.providerFunctions = new HashMap<>();
         addProviderFunction(providerFunction, clazz);
         this.fieldToLimiter = new HashMap<>();
         this.excludedFields = new HashSet<>();
+        this.seed = new Random().nextLong();
     }
 
     /***
@@ -108,6 +111,10 @@ public class TestPojoBuilder<T> {
         return this;
     }
 
+    public TestPojoBuilder<T> setRandomGeneratorSeed(long seed) {
+        this.seed = seed;
+        return this;
+    }
 
     /***
      * Builds the object with the random data generated.
@@ -115,6 +122,7 @@ public class TestPojoBuilder<T> {
      * @return T the object asked to build
      */
     public T build() {
+        log.info("Using seed: " + seed);
         return new PojoBuilder<T>(
                 PojoBuilderConfiguration.builder()
                         .clazz(clazz)
@@ -122,6 +130,7 @@ public class TestPojoBuilder<T> {
                         .generators(customGenerators)
                         .limiters(fieldToLimiter)
                         .excludedFields(excludedFields)
+                        .randomUtils(new RandomUtils(seed))
                         .build())
                 .buildObject();
     }

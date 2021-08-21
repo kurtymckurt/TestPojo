@@ -30,6 +30,7 @@ public class PojoBuilder<T> {
     private final Map<Field, Limiter> limiters;
     private final Set<Field> excludedFields;
     private final PojoBuilderConfiguration configuration;
+    private final RandomUtils randomUtils;
 
     public PojoBuilder(PojoBuilderConfiguration configuration) {
         this.clazz = configuration.getClazz();
@@ -39,6 +40,7 @@ public class PojoBuilder<T> {
         this.generators = new ArrayList<>();
         this.excludedFields = new HashSet<>();
         this.configuration = configuration;
+        this.randomUtils = configuration.getRandomUtils();
 
         verifyAndBuildExcludedFieldSet(configuration.getExcludedFields());
 
@@ -205,17 +207,17 @@ public class PojoBuilder<T> {
             } else if (type.isAssignableFrom(Float.TYPE)) {
                 f.setFloat(instance, new FloatGenerator().generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Byte.TYPE)) {
-                f.setByte(instance, RandomUtils.getRandomByte());
+                f.setByte(instance, randomUtils.getRandomByte());
             } else if (type.isAssignableFrom(Short.TYPE)) {
                 f.setShort(instance, new ShortGenerator().generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Boolean.TYPE)) {
-                f.setBoolean(instance, RandomUtils.getRandomBoolean());
+                f.setBoolean(instance, randomUtils.getRandomBoolean());
             } else if (type.isAssignableFrom(Character.TYPE)) {
-                f.setChar(instance, RandomUtils.getRandomCharacter());
+                f.setChar(instance, randomUtils.getRandomCharacter());
             }else if (type.isEnum()) {
                 f.set(instance,
                         type.getEnumConstants()[
-                                RandomUtils.getRandomIntWithinRange(type.getEnumConstants().length)]);
+                                randomUtils.getRandomIntWithinRange(type.getEnumConstants().length)]);
             } else if(type.isArray()) {
                 Class<?> componentType = type.getComponentType();
                 log.debug("[*] creating array of type: {}", componentType);
@@ -244,7 +246,8 @@ public class PojoBuilder<T> {
     }
 
     Object generateArray(Class<?> type, Limiter limiter) {
-        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 10, limiter);
+        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(
+                0, 10, limiter, configuration.getRandomUtils());
         int size = nullSafeLimits.length;
         Object arr = Array.newInstance(type, size);
 
@@ -262,11 +265,11 @@ public class PojoBuilder<T> {
             } else if (type.isAssignableFrom(Short.TYPE)) {
                 Array.setShort(arr, i, new ShortGenerator().generate(type, null, limiter, getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Byte.TYPE)) {
-                Array.setByte(arr, i, RandomUtils.getRandomByte());
+                Array.setByte(arr, i, randomUtils.getRandomByte());
             } else if (type.isAssignableFrom(Character.TYPE)) {
-                Array.setChar(arr, i, RandomUtils.getRandomCharacter());
+                Array.setChar(arr, i, randomUtils.getRandomCharacter());
             } else if (type.isAssignableFrom(Boolean.TYPE)) {
-                Array.setBoolean(arr, i, RandomUtils.getRandomBoolean());
+                Array.setBoolean(arr, i, randomUtils.getRandomBoolean());
             } else {
                 boolean generated = false;
                 for(Generator generator : generators) {

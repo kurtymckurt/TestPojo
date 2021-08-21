@@ -13,8 +13,9 @@ public class LongGenerator implements Generator<Long> {
 
     @Override
     public Long generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
-        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(0, 100, limiter);
-        return RandomUtils.getRandomLongWithinRange(nullSafeLimits.min, nullSafeLimits.max);
+        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(
+                0, 100, limiter, pojoBuilderConfiguration.getRandomUtils());
+        return pojoBuilderConfiguration.getRandomUtils().getRandomLongWithinRange(nullSafeLimits.min, nullSafeLimits.max);
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 
 public class StringGenerator implements Generator<String> {
 
@@ -19,14 +20,14 @@ public class StringGenerator implements Generator<String> {
             Generex generex = new Generex(limiter.getRegex());
             return generex.random();
         } else {
-            return getStringBasedOnSizeLimits(limiter);
+            return getStringBasedOnSizeLimits(limiter, pojoBuilderConfiguration.getRandomUtils());
         }
     }
 
-    private String getStringBasedOnSizeLimits(Limiter limiter) {
+    private String getStringBasedOnSizeLimits(Limiter limiter, RandomUtils randomUtils) {
         long min = 1;
         long max = 100;
-        long length = RandomUtils.getRandomIntWithinRange(min, max);
+        long length = randomUtils.getRandomIntWithinRange(min, max);
         boolean hasLimiter = limiter != null;
         if (hasLimiter) {
             if (limiter.getMin() != null) {
@@ -38,18 +39,18 @@ public class StringGenerator implements Generator<String> {
             if (limiter.getLength() != null) {
                 length = limiter.getLength();
             } else {
-                length = RandomUtils.getRandomIntWithinRange(min, max);
+                length = randomUtils.getRandomIntWithinRange(min, max);
             }
         }
 
-        return getChars(length);
+        return getChars(length, randomUtils);
     }
 
 
-    private String getChars(long length) {
+    private String getChars(long length, RandomUtils randomUtils) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < length; i++){
-            builder.append(characters.charAt(RandomUtils.getRandomIntWithinRange(0, characters.length()-1)));
+            builder.append(characters.charAt(randomUtils.getRandomIntWithinRange(0, characters.length()-1)));
         }
         return builder.toString();
     }

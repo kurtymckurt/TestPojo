@@ -17,7 +17,7 @@ public class DoubleGenerator implements Generator<Double> {
             min = limiter.getMin();
             max = limiter.getMax();
         }
-        return RandomUtils.getRandomDoubleWithinRange(min, max);
+        return pojoBuilderConfiguration.getRandomUtils().getRandomDoubleWithinRange(min, max);
     }
 
     @Override

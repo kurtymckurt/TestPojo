@@ -6,6 +6,7 @@ import lombok.Value;
 import org.kurtymckurt.TestPojo.generators.Generator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.providers.ProviderFunction;
+import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -15,18 +16,20 @@ import java.util.Set;
 @Builder(toBuilder = true)
 public class PojoBuilderConfiguration {
 
-    private Class<?> clazz;
+    Class<?> clazz;
 
     @Singular
-    private Map<Class, ProviderFunction> providerFunctions;
+    Map<Class, ProviderFunction> providerFunctions;
 
     @Singular
-    private List<Generator> generators;
+    List<Generator> generators;
 
     @Singular
-    private Map<String, Limiter> limiters;
+    Map<String, Limiter> limiters;
 
     @Singular
-    private Set<String> excludedFields;
+    Set<String> excludedFields;
+
+    RandomUtils randomUtils;
 
 }

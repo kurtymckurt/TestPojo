@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class LocalDateGenerator implements Generator<LocalDate> {
    @Override
    public LocalDate generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
-      return RandomUtils.getRandomLocalDate();
+      return pojoBuilderConfiguration.getRandomUtils().getRandomLocalDate();
    }
 
    @Override

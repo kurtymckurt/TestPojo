@@ -11,7 +11,7 @@ public class ByteGenerator implements Generator<Byte> {
 
     @Override
     public Byte generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
-        return RandomUtils.getRandomByte();
+        return pojoBuilderConfiguration.getRandomUtils().getRandomByte();
     }
 
     @Override

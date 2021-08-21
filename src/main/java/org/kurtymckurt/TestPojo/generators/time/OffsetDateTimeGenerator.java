@@ -12,13 +12,13 @@ import java.time.ZoneOffset;
 public class OffsetDateTimeGenerator implements Generator<OffsetDateTime> {
    @Override
    public OffsetDateTime generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
-
+      RandomUtils randomUtils = pojoBuilderConfiguration.getRandomUtils();
       OffsetDateTime offsetDateTime = OffsetDateTime.of(
-            RandomUtils.getRandomLocalDateTime(),
+              randomUtils.getRandomLocalDateTime(),
             ZoneOffset.ofHoursMinutesSeconds(
-                  RandomUtils.getRandomIntWithinRange(1, 12),
-                  RandomUtils.getRandomIntWithinRange(1,59),
-                  RandomUtils.getRandomIntWithinRange(1, 59)));
+                    randomUtils.getRandomIntWithinRange(1, 12),
+                    randomUtils.getRandomIntWithinRange(1,59),
+                    randomUtils.getRandomIntWithinRange(1, 59)));
       return offsetDateTime;
    }
 

@@ -17,7 +17,7 @@ public class ShortGenerator implements Generator<Short> {
             min = limiter.getMin();
             max = limiter.getMax();
         }
-        return RandomUtils.getRandomShortWithinRange(min, max);
+        return pojoBuilderConfiguration.getRandomUtils().getRandomShortWithinRange(min, max);
     }
 
     @Override
