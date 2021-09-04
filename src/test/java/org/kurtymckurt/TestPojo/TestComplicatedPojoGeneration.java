@@ -13,10 +13,17 @@ public class TestComplicatedPojoGeneration {
 
     @Test
     public void testComplexPojo() {
-
-
         Driver build = TestPojo.builder(Driver.class, Driver.builder()::build)
                 .addProviderFunction(Car.builder()::build, Car.class)
+                .build();
+
+        assertTrue(build.cars.size() > 0);
+    }
+
+    @Test
+    public void testComplexPojoUsingBuilderMethod() {
+        Driver build = TestPojo.builder(Driver.class, Driver.builder()::build)
+                .addProviderFunction(Car::builder, "build", Car.class)
                 .build();
 
         assertTrue(build.cars.size() > 0);

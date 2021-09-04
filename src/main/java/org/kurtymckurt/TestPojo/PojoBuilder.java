@@ -8,12 +8,15 @@ import org.kurtymckurt.TestPojo.generators.primatives.*;
 import org.kurtymckurt.TestPojo.generators.time.*;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.providers.ProviderFunction;
+import org.kurtymckurt.TestPojo.providers.ProviderFunctionContainer;
 import org.kurtymckurt.TestPojo.util.LimiterUtils;
 import org.kurtymckurt.TestPojo.util.NullSafeLimits;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -25,7 +28,7 @@ import java.util.stream.Collectors;
 public class PojoBuilder<T> {
 
     private final List<Generator> generators;
-    private final Map<Class, ProviderFunction> providerFunctions;
+    private final Map<Class, ProviderFunctionContainer> providerFunctions;
     private final Class<?> clazz;
     private final Map<Field, Limiter> limiters;
     private final Set<Field> excludedFields;
@@ -153,8 +156,10 @@ public class PojoBuilder<T> {
         try {
 
             //check if we have a provider function
-            ProviderFunction providerFunction = providerFunctions.get(clazz);
-            if(providerFunction != null) {
+            ProviderFunctionContainer providerFunctionContainer = providerFunctions.get(clazz);
+            if(providerFunctionContainer != null) {
+                ProviderFunction providerFunction = providerFunctionContainer.getProviderFunction();
+                if(providerFunction  != null)
                 instance = providerFunction.provide();
             }
 
@@ -167,13 +172,25 @@ public class PojoBuilder<T> {
             log.debug("[*] created object {}.", instance);
             log.debug("[*] attempting to fill the object {}.", instance);
             instance = fillInstanceVariables(instance);
+
+            if(providerFunctionContainer != null) {
+                String builderMethod = providerFunctionContainer.getBuilderMethod();
+                if(builderMethod != null) {
+                    instance = instance.getClass().getMethod(builderMethod, null).invoke(instance);
+                }
+            }
         } catch (InstantiationException e) {
             log.info("Problems instantiating the object", e);
         } catch (IllegalAccessException e) {
             log.info("Problems accessing properties on the object", e);
+        } catch (InvocationTargetException e) {
+            log.info("Problems accessing properties on the object", e);
+        } catch (NoSuchMethodException e) {
+            log.info("Problems building builder on the object", e);
         }
 
         log.debug("[*] completed object: {}", instance);
+
         return (T) instance;
     }
 
@@ -182,7 +199,13 @@ public class PojoBuilder<T> {
         if(declaredFields.length == 0) return instance;
 
         for(Field f : declaredFields) {
-            if(excludedFields.contains(f)) {
+            if(Modifier.isStatic(f.getModifiers()) &&
+               Modifier.isFinal(f.getModifiers())) {
+                log.debug("[*] Skipping due to field being static final. field name: {}, field: {}.",
+                        f.getName(), f.getType());
+                continue;
+            }
+            else if(excludedFields.contains(f)) {
                 log.debug("[*] Skipping due to exclusion. field name: {}, field: {}.", f.getName(), f.getType());
                 continue;
             }

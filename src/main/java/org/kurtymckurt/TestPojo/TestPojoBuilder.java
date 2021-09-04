@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.kurtymckurt.TestPojo.generators.Generator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.providers.ProviderFunction;
+import org.kurtymckurt.TestPojo.providers.ProviderFunctionContainer;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.util.*;
@@ -12,7 +13,7 @@ import java.util.*;
 public class TestPojoBuilder<T> {
 
     private final Class<T> clazz;
-    private final Map<Class, ProviderFunction> providerFunctions;
+    private final Map<Class, ProviderFunctionContainer> providerFunctions;
     private final List<Generator> customGenerators;
     private final Map<String, Limiter> fieldToLimiter;
     private final Set<String> excludedFields;
@@ -55,12 +56,26 @@ public class TestPojoBuilder<T> {
      * @return the builder
      */
     public TestPojoBuilder<T> addProviderFunction(ProviderFunction providerFunction, Class<?> clazz, Class<?> ... clazzes) {
+        return addProviderFunction(providerFunction, null, clazz, clazzes);
+    }
 
-        providerFunctions.put(clazz, providerFunction);
+    /***
+     * Adds a custom provider in order to allow the builder to know how to create a *New* object of that type.
+     * Requires at least one class for each provider.  If the provider creates for multiple classes, you can provide
+     * more classes.  I.E ( a concurrent map creation can provide for ConcurrentMap, Map, etc)
+     * @param providerFunction a provider that news an object of a provided type
+     * @param builderMethod a method to call to build the class if its a builder
+     * @param clazz a mandatory class that will be created by the provider function.
+     * @param clazzes additional classes that can be created by provider function.
+     * @return the builder
+     */
+    public TestPojoBuilder<T> addProviderFunction(ProviderFunction providerFunction, String builderMethod, Class<?> clazz, Class<?> ... clazzes) {
+
+        providerFunctions.put(clazz, new ProviderFunctionContainer(providerFunction, builderMethod));
 
         if(clazzes != null && clazzes.length > 0) {
             for (Class<?> aClass : clazzes) {
-                providerFunctions.put(aClass, providerFunction);
+                providerFunctions.put(aClass, new ProviderFunctionContainer(providerFunction, builderMethod));
             }
         }
         return this;
