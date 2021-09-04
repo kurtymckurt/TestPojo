@@ -122,7 +122,10 @@ public class TestPojoBuilder<T> {
      * @return T the object asked to build
      */
     public T build() {
-        log.info("Using seed: " + seed);
+        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        log.info("Building [{}] using seed: [{}] from corresponding line {}:{}",
+                clazz, seed, stackTrace[2].getFileName(),
+                stackTrace[2].getLineNumber());
         return new PojoBuilder<T>(
                 PojoBuilderConfiguration.builder()
                         .clazz(clazz)
