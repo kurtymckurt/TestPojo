@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 import org.kurtymckurt.TestPojo.generators.Generator;
+import org.kurtymckurt.TestPojo.generators.PostGenerator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.providers.ProviderFunction;
 import org.kurtymckurt.TestPojo.providers.ProviderFunctionContainer;
@@ -24,6 +25,9 @@ public class PojoBuilderConfiguration {
 
     @Singular
     List<Generator> generators;
+
+    @Singular
+    Map<String, Map<String, PostGenerator>> postGenerators;
 
     @Singular
     Map<String, Limiter> limiters;

@@ -1,8 +1,12 @@
 package org.kurtymckurt.TestPojo;
 
 import lombok.extern.slf4j.Slf4j;
+import org.kurtymckurt.TestPojo.exceptions.IllegalAccessException;
+import org.kurtymckurt.TestPojo.exceptions.InstantiationException;
 import org.kurtymckurt.TestPojo.exceptions.NoSuchFieldException;
+import org.kurtymckurt.TestPojo.exceptions.NoSuchMethodException;
 import org.kurtymckurt.TestPojo.generators.Generator;
+import org.kurtymckurt.TestPojo.generators.PostGenerator;
 import org.kurtymckurt.TestPojo.generators.collections.*;
 import org.kurtymckurt.TestPojo.generators.primatives.*;
 import org.kurtymckurt.TestPojo.generators.time.*;
@@ -13,12 +17,8 @@ import org.kurtymckurt.TestPojo.util.LimiterUtils;
 import org.kurtymckurt.TestPojo.util.NullSafeLimits;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /****
@@ -32,6 +32,8 @@ public class PojoBuilder<T> {
     private final Class<?> clazz;
     private final Map<Field, Limiter> limiters;
     private final Set<Field> excludedFields;
+    private final Set<Field> excludedPostGeneratorFields;
+    private final Map<Field, Map<Field, PostGenerator>> postGenerators;
     private final PojoBuilderConfiguration configuration;
     private final RandomUtils randomUtils;
 
@@ -40,14 +42,16 @@ public class PojoBuilder<T> {
         this.providerFunctions = new HashMap<>();
         this.providerFunctions.putAll(configuration.getProviderFunctions());
         this.limiters = new HashMap<>();
+        this.postGenerators = new HashMap<>();
+        this.excludedPostGeneratorFields = new HashSet<>();
         this.generators = new ArrayList<>();
         this.excludedFields = new HashSet<>();
         this.configuration = configuration;
         this.randomUtils = configuration.getRandomUtils();
 
-        verifyAndBuildExcludedFieldSet(configuration.getExcludedFields());
-
-        verifyAndBuildLimitersMap(configuration.getLimiters());
+        verifyAndBuildExcludedFieldSet(clazz, configuration.getExcludedFields());
+        verifyAndBuildLimitersMap(clazz, configuration.getLimiters());
+        verifyAndBuildPostGeneratorsFieldSet(clazz, configuration.getPostGenerators());
         //Add the custom ones first in case they want
         //to override.
         this.generators.addAll(configuration.getGenerators());
@@ -55,11 +59,69 @@ public class PojoBuilder<T> {
 
     }
 
+    private void verifyAndBuildPostGeneratorsFieldSet(Class clazz, Map<String, Map<String, PostGenerator>> postGenerators) {
+        for(Map.Entry<String, Map<String, PostGenerator>> entry : postGenerators.entrySet()) {
+            String[] toTriggerFieldNames = entry.getKey().split("\\.");
+            List<String> toTriggerFieldNameList = Arrays.stream(toTriggerFieldNames).collect(Collectors.toList());
+            Field toTriggerField = getFieldByString(clazz, toTriggerFieldNameList);
+
+            Map<String, PostGenerator> value = entry.getValue();
+            for (Map.Entry<String, PostGenerator> stringPostGeneratorEntry : value.entrySet()) {
+                String[] toSetFieldNames = stringPostGeneratorEntry.getKey().split("\\.");
+                List<String> toSetFieldNameList = Arrays.stream(toSetFieldNames).collect(Collectors.toList());
+                verifyAndBuildPostGeneratorsFieldSetHelper(clazz,
+                        toSetFieldNameList,
+                        toTriggerField,
+                        stringPostGeneratorEntry.getValue());
+            }
+        }
+    }
+
+    private Field getFieldByString(Class<?> type, List<String> fieldNames) {
+        try {
+            Field declaredField = type.getDeclaredField(fieldNames.get(0));
+            if(fieldNames.size() > 1) {
+                fieldNames.remove(0);
+                verifyAndBuildExcludesSetHelper(declaredField.getType(), fieldNames);
+            } else {
+                return declaredField;
+            }
+        } catch (java.lang.NoSuchFieldException e) {
+            throw new NoSuchFieldException(fieldNames.get(0), type, e);
+        }
+        throw new NoSuchFieldException(fieldNames.get(0), type, null);
+    }
+
+    private void verifyAndBuildPostGeneratorsFieldSetHelper(Class<?> type,
+                                                            List<String> fieldNames,
+                                                            Field toTriggerField,
+                                                            PostGenerator postGenerator) {
+        try {
+            Field declaredField = type.getDeclaredField(fieldNames.get(0));
+            if(fieldNames.size() > 1) {
+                fieldNames.remove(0);
+                verifyAndBuildPostGeneratorsFieldSetHelper(declaredField.getType(), fieldNames, toTriggerField, postGenerator);
+            } else {
+                Map<Field, PostGenerator> fieldPostGeneratorMap = postGenerators.get(toTriggerField);
+                if(fieldPostGeneratorMap == null) {
+                    Map<Field, PostGenerator> fieldPostGeneratorMap1 = new HashMap<>();
+                    fieldPostGeneratorMap1.put(declaredField, postGenerator);
+                    this.postGenerators.put(toTriggerField, fieldPostGeneratorMap1);
+                } else {
+                    fieldPostGeneratorMap.put(declaredField, postGenerator);
+                }
+                this.excludedPostGeneratorFields.add(declaredField);
+            }
+        } catch (java.lang.NoSuchFieldException e) {
+            throw new NoSuchFieldException(fieldNames.get(0), type, e);
+        }
+    }
+
     public PojoBuilderConfiguration getConfigurationWithOnlyProvidersAndGenerators() {
         return configuration.toBuilder().clearExcludedFields().clearLimiters().build();
     }
 
-    private void verifyAndBuildExcludedFieldSet(Set<String> fieldsToExclude) {
+    private void verifyAndBuildExcludedFieldSet(Class clazz, Set<String> fieldsToExclude) {
         for(String field : fieldsToExclude) {
             String[] fieldNames = field.split("\\.");
             List<String> fieldNameList = Arrays.stream(fieldNames).collect(Collectors.toList());
@@ -81,7 +143,7 @@ public class PojoBuilder<T> {
         }
     }
 
-    private void verifyAndBuildLimitersMap(Map<String, Limiter> limiters) {
+    private void verifyAndBuildLimitersMap(Class clazz, Map<String, Limiter> limiters) {
         Set<Map.Entry<String, Limiter>> entries =  limiters.entrySet();
         for (Map.Entry<String, Limiter> entry : entries) {
             String[] fieldNames = entry.getKey().split("\\.");
@@ -152,7 +214,7 @@ public class PojoBuilder<T> {
 
         log.debug("[*] creating object {}.", clazz);
         Object instance = null;
-
+        String builderMethod = null;
         try {
 
             //check if we have a provider function
@@ -166,27 +228,30 @@ public class PojoBuilder<T> {
             //If we didn't find a provider, try to new it up ourselves
             //this requires a no arg constructor...
             if(instance == null) {
-                instance = clazz.newInstance();
+                instance =  clazz.getDeclaredConstructor().newInstance();
             }
 
             log.debug("[*] created object {}.", instance);
             log.debug("[*] attempting to fill the object {}.", instance);
             instance = fillInstanceVariables(instance);
 
+
             if(providerFunctionContainer != null) {
-                String builderMethod = providerFunctionContainer.getBuilderMethod();
+                builderMethod = providerFunctionContainer.getBuilderMethod();
                 if(builderMethod != null) {
-                    instance = instance.getClass().getMethod(builderMethod, null).invoke(instance);
+                    Method method = instance.getClass().getMethod(builderMethod, null);
+                    instance = method.invoke(instance);
                 }
             }
-        } catch (InstantiationException e) {
+        } catch (java.lang.InstantiationException e) {
             log.info("Problems instantiating the object", e);
-        } catch (IllegalAccessException e) {
+            throw new InstantiationException(clazz, e);
+        } catch (java.lang.IllegalAccessException | InvocationTargetException e) {
             log.info("Problems accessing properties on the object", e);
-        } catch (InvocationTargetException e) {
-            log.info("Problems accessing properties on the object", e);
-        } catch (NoSuchMethodException e) {
+            throw new IllegalAccessException(clazz, e);
+        } catch (java.lang.NoSuchMethodException e) {
             log.info("Problems building builder on the object", e);
+            throw new NoSuchMethodException(builderMethod, instance.getClass(), e);
         }
 
         log.debug("[*] completed object: {}", instance);
@@ -208,11 +273,33 @@ public class PojoBuilder<T> {
             else if(excludedFields.contains(f)) {
                 log.debug("[*] Skipping due to exclusion. field name: {}, field: {}.", f.getName(), f.getType());
                 continue;
+            } else if(excludedPostGeneratorFields.contains(f)) {
+                log.debug("[*] Skipping due to post generator. field name: {}, field: {}.", f.getName(), f.getType());
+                continue;
             }
             f.setAccessible(true);
             setField(instance, f);
+
+            //Now we do post generators!
+            executePostGenerators(instance, f);
         }
         return instance;
+    }
+
+    private void executePostGenerators(Object instance, Field f) {
+        Map<Field, PostGenerator> fieldPostGeneratorMap = this.postGenerators.get(f);
+        if(fieldPostGeneratorMap != null && !fieldPostGeneratorMap.isEmpty()) {
+            for (Map.Entry<Field, PostGenerator> fieldPostGeneratorEntry : fieldPostGeneratorMap.entrySet()) {
+                Field key = fieldPostGeneratorEntry.getKey();
+                PostGenerator postGenerator = fieldPostGeneratorEntry.getValue();
+                try {
+                    key.setAccessible(true);
+                    key.set(instance, postGenerator.generate(f.get(instance)));
+                } catch (java.lang.IllegalAccessException e) {
+                    throw new IllegalAccessException(instance.getClass(), e);
+                }
+            }
+        }
     }
 
     void setField(Object instance, Field f) {
@@ -263,7 +350,7 @@ public class PojoBuilder<T> {
                     f.set(instance, buildObject(type));
                 }
             }
-        } catch (IllegalAccessException e) {
+        } catch (java.lang.IllegalAccessException e) {
             log.debug("[*] Exception trying to generate the field {}", type.getTypeName(), e);
         }
     }

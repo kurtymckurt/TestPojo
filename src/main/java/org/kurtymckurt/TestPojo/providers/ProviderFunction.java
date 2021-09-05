@@ -1,6 +1,6 @@
 package org.kurtymckurt.TestPojo.providers;
 
 @FunctionalInterface
-public interface ProviderFunction {
-   Object provide();
+public interface ProviderFunction<T> {
+   T provide();
 }

@@ -2,6 +2,7 @@ package org.kurtymckurt.TestPojo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kurtymckurt.TestPojo.generators.Generator;
+import org.kurtymckurt.TestPojo.generators.PostGenerator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.providers.ProviderFunction;
 import org.kurtymckurt.TestPojo.providers.ProviderFunctionContainer;
@@ -15,6 +16,7 @@ public class TestPojoBuilder<T> {
     private final Class<T> clazz;
     private final Map<Class, ProviderFunctionContainer> providerFunctions;
     private final List<Generator> customGenerators;
+    private final Map<String, Map<String, PostGenerator>> postGenerators;
     private final Map<String, Limiter> fieldToLimiter;
     private final Set<String> excludedFields;
     private long seed;
@@ -24,10 +26,15 @@ public class TestPojoBuilder<T> {
     }
 
     public TestPojoBuilder(Class<T> clazz, ProviderFunction providerFunction) {
+        this(clazz, null, providerFunction);
+    }
+
+    public TestPojoBuilder(Class<T> clazz, String builderMethod, ProviderFunction providerFunction) {
         this.clazz = clazz;
         this.customGenerators = new ArrayList<>();
+        this.postGenerators = new HashMap<>();
         this.providerFunctions = new HashMap<>();
-        addProviderFunction(providerFunction, clazz);
+        addProviderFunction(providerFunction, builderMethod, clazz);
         this.fieldToLimiter = new HashMap<>();
         this.excludedFields = new HashSet<>();
         this.seed = new Random().nextLong();
@@ -105,6 +112,16 @@ public class TestPojoBuilder<T> {
         return this;
     }
 
+    public TestPojoBuilder<T> addPostGenerator(String fieldTriggered, String fieldToSet, PostGenerator postGenerator) {
+        Map<String, PostGenerator> stringPostGeneratorMap = this.postGenerators.get(fieldTriggered);
+        if(stringPostGeneratorMap == null) {
+            Map<String, PostGenerator> postGeneratorMap = new HashMap<>();
+            postGeneratorMap.put(fieldToSet, postGenerator);
+            this.postGenerators.put(fieldTriggered, postGeneratorMap);
+        }
+        return this;
+    }
+
     /***
      * Adds multiple fields to be excluded from generation.  This field will likely be null
      * but can depend on the constructor or builder used to provide the new object.
@@ -146,6 +163,7 @@ public class TestPojoBuilder<T> {
                         .clazz(clazz)
                         .providerFunctions(providerFunctions)
                         .generators(customGenerators)
+                        .postGenerators(postGenerators)
                         .limiters(fieldToLimiter)
                         .excludedFields(excludedFields)
                         .randomUtils(new RandomUtils(seed))
