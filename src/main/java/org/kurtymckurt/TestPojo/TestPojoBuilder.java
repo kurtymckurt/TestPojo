@@ -20,6 +20,7 @@ public class TestPojoBuilder<T> {
     private final Map<String, Limiter> fieldToLimiter;
     private final Set<String> excludedFields;
     private long seed;
+    private boolean warnOnFieldNotExisting;
 
     public TestPojoBuilder(Class<T> clazz) {
         this(clazz, null);
@@ -38,6 +39,7 @@ public class TestPojoBuilder<T> {
         this.fieldToLimiter = new HashMap<>();
         this.excludedFields = new HashSet<>();
         this.seed = new Random().nextLong();
+        this.warnOnFieldNotExisting = false;
     }
 
     /***
@@ -148,6 +150,18 @@ public class TestPojoBuilder<T> {
         return this;
     }
 
+    /**
+     * Typically, if you set an excluded field or limiter, we will throw an exception to let you know that
+     * the excludes or limiter isn't going to be used. Setting this to true, will enable only warning
+     * via log message and will not throw an exception
+     * @param warn if you want it to warn, otherwise error
+     * @return TestPojoBuilder
+     */
+    public TestPojoBuilder<T> setWarnOnFieldNotExisting(boolean warn) {
+        this.warnOnFieldNotExisting = warn;
+        return this;
+    }
+
     /***
      * Builds the object with the random data generated.
      *
@@ -167,6 +181,7 @@ public class TestPojoBuilder<T> {
                         .limiters(fieldToLimiter)
                         .excludedFields(excludedFields)
                         .randomUtils(new RandomUtils(seed))
+                        .warnOnFieldNotExisting(warnOnFieldNotExisting)
                         .build())
                 .buildObject();
     }

@@ -37,4 +37,6 @@ public class PojoBuilderConfiguration {
 
     RandomUtils randomUtils;
 
+    boolean warnOnFieldNotExisting;
+
 }

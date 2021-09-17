@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kurtymckurt.TestPojo.exceptions.NoSuchFieldException;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
-import org.kurtymckurt.TestPojo.pojo.Car;
-import org.kurtymckurt.TestPojo.pojo.ImmutablePojo;
-import org.kurtymckurt.TestPojo.pojo.Person;
-import org.kurtymckurt.TestPojo.pojo.TestingPojo;
+import org.kurtymckurt.TestPojo.pojo.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -128,6 +125,62 @@ public class TestPojoTesting {
                         "age.doesn'texist", Limiter.builder().build()
                 )
                 .build());
+    }
+
+    @Test
+    public void testNoExceptionThrownWhenWarnIsEnabledForLimiters() {
+        TestPojo.builder(Person.class)
+                .setWarnOnFieldNotExisting(true)
+                .addLimiter(
+                        "age.doesn'texist", Limiter.builder().build()
+                )
+                .build();
+    }
+
+
+    @Test
+    public void testNoExceptionThrownWhenWarnIsEnabledForExcludes() {
+        TestPojo.builder(Person.class)
+                .setWarnOnFieldNotExisting(true)
+                .addExcludedField("age.doesn'texist")
+                .build();
+    }
+
+    @Test
+    public void testExceptionThrownWhenExcludesClassIsIncorrect() {
+        Assertions.assertThrows(NoSuchFieldException.class, () -> TestPojo.builder(Person.class)
+                .addExcludedField("age.doesn'texist")
+                .build());
+    }
+
+    @Test
+    public void testExcludesIsOnlyOnSpecificClass() {
+        Assertions.assertThrows(NoSuchFieldException.class, () -> TestPojo.builder(Person.class)
+                .addExcludedField("age.doesn'texist")
+                .build());
+    }
+
+
+    @Test
+    public void testExcludesWorkWithOnlyClass() {
+        ObjectWithInnerObjectSameField object = TestPojo.builder(ObjectWithInnerObjectSameField.class)
+                .addExcludedField("v1")
+                .build();
+        assertNull(object.getV1());
+        assertNotNull(object.getInnerObject().getV1());
+        assertNotNull(object.getInnerObject().getWhatever());
+        assertNotNull(object.getV2());
+    }
+
+    @Test
+    public void testExcludesWorkWithOnlyClass2() {
+        ObjectWithInnerObjectSameField object = TestPojo.builder(ObjectWithInnerObjectSameField.class)
+                .addExcludedField("innerObject.v1")
+                .build();
+        assertNotNull(object.getV1());
+        assertNull(object.getInnerObject().getV1());
+        assertNotNull(object.getInnerObject().getWhatever());
+        assertNotNull(object.getV2());
     }
 
     @Test

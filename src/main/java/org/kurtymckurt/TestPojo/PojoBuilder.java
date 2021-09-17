@@ -31,11 +31,12 @@ public class PojoBuilder<T> {
     private final Map<Class, ProviderFunctionContainer> providerFunctions;
     private final Class<?> clazz;
     private final Map<Field, Limiter> limiters;
-    private final Set<Field> excludedFields;
+    private final Map<Class, Set<Field>> excludedFields;
     private final Set<Field> excludedPostGeneratorFields;
     private final Map<Field, Map<Field, PostGenerator>> postGenerators;
     private final PojoBuilderConfiguration configuration;
     private final RandomUtils randomUtils;
+    private final boolean warnOnFieldNotExisting;  // for excluding/limiting fields
 
     public PojoBuilder(PojoBuilderConfiguration configuration) {
         this.clazz = configuration.getClazz();
@@ -45,9 +46,10 @@ public class PojoBuilder<T> {
         this.postGenerators = new HashMap<>();
         this.excludedPostGeneratorFields = new HashSet<>();
         this.generators = new ArrayList<>();
-        this.excludedFields = new HashSet<>();
+        this.excludedFields = new HashMap<>();
         this.configuration = configuration;
         this.randomUtils = configuration.getRandomUtils();
+        this.warnOnFieldNotExisting = configuration.isWarnOnFieldNotExisting();
 
         verifyAndBuildExcludedFieldSet(clazz, configuration.getExcludedFields());
         verifyAndBuildLimitersMap(clazz, configuration.getLimiters());
@@ -87,9 +89,14 @@ public class PojoBuilder<T> {
                 return declaredField;
             }
         } catch (java.lang.NoSuchFieldException e) {
-            throw new NoSuchFieldException(fieldNames.get(0), type, e);
+            if(!warnOnFieldNotExisting) {
+                throw new NoSuchFieldException(fieldNames.get(0), type, e);
+            }
         }
-        throw new NoSuchFieldException(fieldNames.get(0), type, null);
+        if(!warnOnFieldNotExisting) {
+            throw new NoSuchFieldException(fieldNames.get(0), type, null);
+        }
+        return null;
     }
 
     private void verifyAndBuildPostGeneratorsFieldSetHelper(Class<?> type,
@@ -113,7 +120,11 @@ public class PojoBuilder<T> {
                 this.excludedPostGeneratorFields.add(declaredField);
             }
         } catch (java.lang.NoSuchFieldException e) {
-            throw new NoSuchFieldException(fieldNames.get(0), type, e);
+            if(!warnOnFieldNotExisting) {
+                throw new NoSuchFieldException(fieldNames.get(0), type, e);
+            } else {
+                log.warn("Could not find field: {} of type: {} for provided post generator.", fieldNames.get(0), type);
+            }
         }
     }
 
@@ -136,10 +147,19 @@ public class PojoBuilder<T> {
                 fieldNames.remove(0);
                 verifyAndBuildExcludesSetHelper(declaredField.getType(), fieldNames);
             } else {
-                excludedFields.add(declaredField);
+                Set<Field> fields = excludedFields.get(type);
+                if(fields == null) {
+                    fields = new HashSet<>();
+                }
+                fields.add(declaredField);
+                excludedFields.put(type, fields);
             }
         } catch (java.lang.NoSuchFieldException e) {
-            throw new NoSuchFieldException(fieldNames.get(0), type, e);
+            if(!warnOnFieldNotExisting) {
+                throw new NoSuchFieldException(fieldNames.get(0), type, e);
+            } else {
+                log.warn("Could not find field: {} of type: {} for provided excludes.", fieldNames.get(0), type);
+            }
         }
     }
 
@@ -162,7 +182,11 @@ public class PojoBuilder<T> {
                 limiters.put(declaredField, limiter);
             }
         } catch (java.lang.NoSuchFieldException e) {
-            throw new NoSuchFieldException(fieldNames.get(0), type, e);
+            if(!warnOnFieldNotExisting) {
+                throw new NoSuchFieldException(fieldNames.get(0), type, e);
+            }else {
+                log.warn("Could not find field: {} of type: {} for provided limiter.", fieldNames.get(0), type);
+            }
         }
     }
 
@@ -202,6 +226,7 @@ public class PojoBuilder<T> {
     public T buildObject() {
         return buildObject(clazz);
     }
+
 
     private T buildObject(Class<?> clazz) {
         //First see if the object is just one we can generate from
@@ -263,6 +288,8 @@ public class PojoBuilder<T> {
         Field[] declaredFields = instance.getClass().getDeclaredFields();
         if(declaredFields.length == 0) return instance;
 
+        Set<Field> excludedForThisInstance = excludedFields.get(instance.getClass());
+
         for(Field f : declaredFields) {
             if(Modifier.isStatic(f.getModifiers()) &&
                Modifier.isFinal(f.getModifiers())) {
@@ -270,7 +297,7 @@ public class PojoBuilder<T> {
                         f.getName(), f.getType());
                 continue;
             }
-            else if(excludedFields.contains(f)) {
+            else if(excludedForThisInstance != null && excludedForThisInstance.contains(f)) {
                 log.debug("[*] Skipping due to exclusion. field name: {}, field: {}.", f.getName(), f.getType());
                 continue;
             } else if(excludedPostGeneratorFields.contains(f)) {

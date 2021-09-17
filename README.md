@@ -35,6 +35,9 @@ doesn't support the complex data type.
 * Has support for basic limiters
     * This is how you can limit how big collections get or ranges for numbers       
 * Has support for setting seed for reproducibility
+* Has support for warning on class not existing when setting excluded fields or limiters
+* Has support for post generators.
+    * I.E. I want to set field B after and possibly based on field A.
 
 See test package for examples.
 
@@ -260,6 +263,20 @@ Output:
 ```java
 RegexTest.RegexObject(cve=CVE-5820-84220, cwe=CWE-5879)
 ```
+
+#### Post Generators
+Say you have a case where you need to set a field based on another field. Perhaps they have some relation logically.  For example, maybe you have a list of items and you need to set the total price field. That could be done with a post generator. Another case maybe, where two fields are the same typically, you can use a case where you set just that withouth modifying after the builder runs.
+
+Look at this example: We have a point class. it has X and Y.  For this example, we want to set Y to whatever X is generated to.
+
+```java 
+Point point = TestPojo.builder(Point.class)
+                .addPostGenerator("x", "y",
+                        (PostGenerator<Integer, Integer>) o -> o).build();
+```
+
+This will generate a point where x is the same as y.
+
 #### Exception
 
 If there is a problem with the name of the variable when specifying a limiter, we will fail fast.  The library will throw a NoSuchFieldException and state which class it believes should've had that field.
