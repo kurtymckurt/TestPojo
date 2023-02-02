@@ -316,5 +316,3 @@ One issue with TestPojo is that if your test fails on the CI, how can you reprod
 
 ## Future improvements
 
-    
-[![DepShield Badge](https://depshield.sonatype.org/badges/kurtymckurt/TestPojo/depshield.svg)](https://depshield.github.io)
