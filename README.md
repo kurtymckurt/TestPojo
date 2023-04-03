@@ -181,6 +181,7 @@ For collections, you can specify:
 For strings, you can specify:
 * length
 * regex
+* potential values
 
 For example, what if our pojo is a person and their age should reasonably be between 1 and 100? See the example below:
 
@@ -201,6 +202,7 @@ public void realisticTest() {
 ```
 
 Here, you can see that we're limiting the field "age" between 1 and 100. 
+
 
 #### Complex Types
 Limiters support limiting fields on objects within our pojo.
@@ -240,29 +242,45 @@ the limiter that will generate a string of that format.  BE AWARE, the more comp
 the regex, the longer it could take to generate.
 
 ```java
-    @Data
-    public class RegexObject {
-        private String cve;
-        private String cwe;
-    }
+@Data
+public class RegexObject {
+    private String cve;
+    private String cwe;
+}
 
-    RegexObject regexTestObject = TestPojo.builder(RegexObject.class)
-                .addLimiter("cve",
-                        Limiter.builder()
-                                .regex("CVE-\\d\\d\\d\\d-[0-9]{4,7}")
-                                .build())
-                .addLimiter("cwe",
-                        Limiter.builder()
-                                .regex("CWE-[0-9]{4}")
-                                .build())
-                .addProviderFunction(RegexObject::new, RegexObject.class)
-                .build();
+RegexObject regexTestObject = TestPojo.builder(RegexObject.class)
+            .addLimiter("cve",
+                    Limiter.builder()
+                            .regex("CVE-\\d\\d\\d\\d-[0-9]{4,7}")
+                            .build())
+            .addLimiter("cwe",
+                    Limiter.builder()
+                            .regex("CWE-[0-9]{4}")
+                            .build())
+            .addProviderFunction(RegexObject::new, RegexObject.class)
+            .build();
 ```
 
 Output:
 ```java
 RegexTest.RegexObject(cve=CVE-5820-84220, cwe=CWE-5879)
 ```
+
+#### Potential Values
+Sometimes you may encounter a situation where you have a String field for a DTO that corresponds to an enum. Therefore, you may 
+want to limit to some list of values ( or enum values ).  Below, you can see how to set a list of 
+values that the generator will choose from (for String).  For actual enum fields, the generator will choose from the potential enums. However, with strings, it doesn't know it corresponds to an enum.
+
+```java
+List<String> names = new ArrayList<>();
+names.add("kurt");
+names.add("bill");
+
+final Person person = TestPojo.builder(Person.class)
+        .addLimiter("name", Limiter.builder().potentialValues(names).build()).build();
+
+```
+Here, you can see the person class will be generated with a name that's guaranteed to be either "kurt" or "bill".
 
 #### Post Generators
 Say you have a case where you need to set a field based on another field. Perhaps they have some relation logically.  For example, maybe you have a list of items and you need to set the total price field. That could be done with a post generator. Another case maybe, where two fields are the same typically, you can use a case where you set just that withouth modifying after the builder runs.

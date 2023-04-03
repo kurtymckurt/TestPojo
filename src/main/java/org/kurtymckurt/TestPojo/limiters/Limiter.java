@@ -3,12 +3,15 @@ package org.kurtymckurt.TestPojo.limiters;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @Builder
 public class Limiter {
-   private Integer length;  // Strings, Arrays
-   private Integer size;    // Collections
-   private Long min;     // Numbers
-   private Long max;     // Numbers
-   private String regex;  //For string generation
+   Integer length;  // Strings, Arrays
+   Integer size;    // Collections
+   Long min;     // Numbers
+   Long max;     // Numbers
+   String regex;  //For string
+   List<String> potentialValues;
 }

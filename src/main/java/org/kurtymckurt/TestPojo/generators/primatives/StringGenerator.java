@@ -7,7 +7,7 @@ import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.Field;
-import java.util.Random;
+import java.util.List;
 
 public class StringGenerator implements Generator<String> {
 
@@ -20,16 +20,21 @@ public class StringGenerator implements Generator<String> {
             Generex generex = new Generex(limiter.getRegex());
             return generex.random();
         } else {
-            return getStringBasedOnSizeLimits(limiter, pojoBuilderConfiguration.getRandomUtils());
+            return getStringBasedOnLimits(limiter, pojoBuilderConfiguration.getRandomUtils());
         }
     }
 
-    private String getStringBasedOnSizeLimits(Limiter limiter, RandomUtils randomUtils) {
+    private String getStringBasedOnLimits(Limiter limiter, RandomUtils randomUtils) {
         long min = 1;
         long max = 100;
         long length = randomUtils.getRandomIntWithinRange(min, max);
         boolean hasLimiter = limiter != null;
         if (hasLimiter) {
+            // If they set that they want a value from a provided list of values...
+            List<String> potentialValues = limiter.getPotentialValues();
+            if (potentialValues != null && potentialValues.size() > 0) {
+                return potentialValues.get(randomUtils.getRandomIntWithinRange(potentialValues.size()));
+            }
             if (limiter.getMin() != null) {
                 min = limiter.getMin();
             }

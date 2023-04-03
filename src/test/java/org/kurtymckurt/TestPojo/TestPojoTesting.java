@@ -6,6 +6,9 @@ import org.kurtymckurt.TestPojo.exceptions.NoSuchFieldException;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.pojo.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPojoTesting {
@@ -229,5 +232,18 @@ public class TestPojoTesting {
                 .setRandomGeneratorSeed(9999).build();
 
         assertEquals(person1, person2, "Same seed, same person");
+    }
+
+    @Test
+    public void testProvidedValues() {
+        List<String> names = new ArrayList<>();
+        names.add("kurt");
+        names.add("bill");
+
+        final Person person = TestPojo.builder(Person.class)
+                .addLimiter("name", Limiter.builder().potentialValues(names).build()).build();
+
+        assertTrue(person.getName().equals("kurt") || person
+                        .getName().equals("bill"), "Name should be kurt or bill");
     }
 }

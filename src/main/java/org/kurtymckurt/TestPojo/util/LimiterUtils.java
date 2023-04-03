@@ -2,7 +2,6 @@ package org.kurtymckurt.TestPojo.util;
 
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 
-import java.util.Random;
 
 public class LimiterUtils {
 
