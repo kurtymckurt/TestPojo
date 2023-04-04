@@ -85,24 +85,25 @@ public class PojoBuilder<T> {
     }
 
     private void verifyAndBuildExcludesSetHelper(Class<?> type, List<String> fieldNames) {
+        Class<?> typeToUse = type.isArray() ? type.getComponentType() : type;
         try {
-            Field declaredField = type.getDeclaredField(fieldNames.get(0));
+            Field declaredField = typeToUse.getDeclaredField(fieldNames.get(0));
             if(fieldNames.size() > 1) {
                 fieldNames.remove(0);
                 verifyAndBuildExcludesSetHelper(declaredField.getType(), fieldNames);
             } else {
-                Set<Field> fields = excludedFields.get(type);
+                Set<Field> fields = excludedFields.get(typeToUse);
                 if(fields == null) {
                     fields = new HashSet<>();
                 }
                 fields.add(declaredField);
-                excludedFields.put(type, fields);
+                excludedFields.put(typeToUse, fields);
             }
         } catch (java.lang.NoSuchFieldException e) {
             if(!warnOnFieldNotExisting) {
-                throw new NoSuchFieldException(fieldNames.get(0), type, e);
+                throw new NoSuchFieldException(fieldNames.get(0), typeToUse, e);
             } else {
-                log.warn("Could not find field: {} of type: {} for provided excludes.", fieldNames.get(0), type);
+                log.warn("Could not find field: {} of type: {} for provided excludes.", fieldNames.get(0), typeToUse);
             }
         }
     }
@@ -154,21 +155,22 @@ public class PojoBuilder<T> {
     }
 
     private Field getFieldByString(Class<?> type, List<String> fieldNames) {
+        Class<?> typeToUse = type.isArray() ? type.getComponentType() : type;
         try {
-            Field declaredField = type.getDeclaredField(fieldNames.get(0));
+            Field declaredField = typeToUse.getDeclaredField(fieldNames.get(0));
             if(fieldNames.size() > 1) {
                 fieldNames.remove(0);
-                verifyAndBuildExcludesSetHelper(declaredField.getType(), fieldNames);
+                return getFieldByString(declaredField.getType(), fieldNames);
             } else {
                 return declaredField;
             }
         } catch (java.lang.NoSuchFieldException e) {
             if(!warnOnFieldNotExisting) {
-                throw new NoSuchFieldException(fieldNames.get(0), type, e);
+                throw new NoSuchFieldException(fieldNames.get(0), typeToUse, e);
             }
         }
         if(!warnOnFieldNotExisting) {
-            throw new NoSuchFieldException(fieldNames.get(0), type, null);
+            throw new NoSuchFieldException(fieldNames.get(0), typeToUse, null);
         }
         return null;
     }
@@ -177,8 +179,9 @@ public class PojoBuilder<T> {
                                                             List<String> fieldNames,
                                                             Field toTriggerField,
                                                             PostGenerator postGenerator) {
+        Class<?> typeToUse = type.isArray() ? type.getComponentType() : type;
         try {
-            Field declaredField = type.getDeclaredField(fieldNames.get(0));
+            Field declaredField = typeToUse.getDeclaredField(fieldNames.get(0));
             if(fieldNames.size() > 1) {
                 fieldNames.remove(0);
                 verifyAndBuildPostGeneratorsFieldSetHelper(declaredField.getType(), fieldNames, toTriggerField, postGenerator);
@@ -195,9 +198,9 @@ public class PojoBuilder<T> {
             }
         } catch (java.lang.NoSuchFieldException e) {
             if(!warnOnFieldNotExisting) {
-                throw new NoSuchFieldException(fieldNames.get(0), type, e);
+                throw new NoSuchFieldException(fieldNames.get(0), typeToUse, e);
             } else {
-                log.warn("Could not find field: {} of type: {} for provided post generator.", fieldNames.get(0), type);
+                log.warn("Could not find field: {} of type: {} for provided post generator.", fieldNames.get(0), typeToUse);
             }
         }
     }

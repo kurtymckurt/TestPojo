@@ -117,6 +117,26 @@ public class TestPojoTesting {
     }
 
     @Test
+    public void testSettingExcludesOnArraySubType() {
+        PersonCollection personCollection = TestPojo.builder(PersonCollection.class)
+                .addExcludedField("people.name").build();
+        assertNotNull(personCollection);
+        for (Person person : personCollection.getPeople()) {
+            assertNull(person.getName());
+        }
+    }
+
+    @Test
+    public void testSettingPostGeneratorOnArraySubType() {
+        PersonCollection personCollection = TestPojo.builder(PersonCollection.class)
+                .addPostGenerator("people.name", "people.address", o -> o).build();
+        assertNotNull(personCollection);
+        for (Person person : personCollection.getPeople()) {
+            assertEquals(person.getAddress(), person.getName());
+        }
+    }
+
+    @Test
     public void testImmutableObjectWithBuilderWithProviderFunction() {
         ImmutablePojo.ImmutablePojoBuilder immutablePojoBuilder = TestPojo.builder(
                 ImmutablePojo.ImmutablePojoBuilder.class, ImmutablePojo::builder).build();
