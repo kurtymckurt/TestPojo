@@ -9,4 +9,5 @@ public class CollectionLimiter implements Limiter {
     Integer size;
     Long min;
     Long max;
+    public static class CollectionLimiterBuilder {}
 }

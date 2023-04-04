@@ -9,4 +9,6 @@ public class ArrayLimiter implements Limiter {
     Integer length;
     Long min;
     Long max;
+
+    public static class ArrayLimiterBuilder {}
 }

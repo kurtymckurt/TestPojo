@@ -13,4 +13,5 @@ public class StringLimiter implements Limiter {
     List<String> potentialValues;
     Long min;
     Long max;
+    public static class StringLimiterBuilder {}
 }
