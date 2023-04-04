@@ -4,6 +4,8 @@ import com.mifmif.common.regex.Generex;
 import org.kurtymckurt.TestPojo.PojoBuilderConfiguration;
 import org.kurtymckurt.TestPojo.generators.Generator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
+import org.kurtymckurt.TestPojo.limiters.StringLimiter;
+import org.kurtymckurt.TestPojo.util.LimiterUtils;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.Field;
@@ -15,16 +17,16 @@ public class StringGenerator implements Generator<String> {
 
     @Override
     public String generate(Class<?> clazz, Field field, Limiter limiter, PojoBuilderConfiguration pojoBuilderConfiguration) {
-
-        if (limiter != null && limiter.getRegex() != null) {
-            Generex generex = new Generex(limiter.getRegex());
+        final StringLimiter sLimiter = LimiterUtils.getStringLimiter(limiter);
+        if (sLimiter != null && sLimiter.getRegex() != null) {
+            Generex generex = new Generex(sLimiter.getRegex());
             return generex.random();
         } else {
-            return getStringBasedOnLimits(limiter, pojoBuilderConfiguration.getRandomUtils());
+            return getStringBasedOnLimits(sLimiter, pojoBuilderConfiguration.getRandomUtils());
         }
     }
 
-    private String getStringBasedOnLimits(Limiter limiter, RandomUtils randomUtils) {
+    private String getStringBasedOnLimits(StringLimiter limiter, RandomUtils randomUtils) {
         long min = 1;
         long max = 100;
         long length = randomUtils.getRandomIntWithinRange(min, max);

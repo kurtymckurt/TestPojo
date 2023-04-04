@@ -3,7 +3,7 @@ package org.kurtymckurt.TestPojo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kurtymckurt.TestPojo.exceptions.NoSuchFieldException;
-import org.kurtymckurt.TestPojo.limiters.Limiter;
+import org.kurtymckurt.TestPojo.limiters.Limiters;
 import org.kurtymckurt.TestPojo.pojo.*;
 
 import java.util.ArrayList;
@@ -17,15 +17,15 @@ public class TestPojoTesting {
     public void testBasicPojo() {
         TestingPojo testingPojo = TestPojo.builder(TestingPojo.class)
                 .addLimiter(
-                        "anotherPojo.size", Limiter.builder()
+                        "anotherPojo.size", Limiters.numberLimiter()
                                 .min(0L)
                                 .max(1000L)
                                 .build())
-                .addLimiter("anotherPojo.car.make", Limiter.builder()
+                .addLimiter("anotherPojo.car.make", Limiters.stringLimiter()
                         .length(5)
                         .build())
                 .addLimiter("somethingElse",
-                        Limiter.builder()
+                        Limiters.arrayLimiter()
                             .min(0L)
                             .max(9000L)
                             .length(20)
@@ -79,18 +79,18 @@ public class TestPojoTesting {
     public void realisticTest() {
         Person person = TestPojo.builder(Person.class)
                 .addLimiter(
-                        "age", Limiter.builder()
+                        "age", Limiters.numberLimiter()
                                 .min(0L)
                                 .max(100L)
                                 .build()
                 )
                 .addLimiter(
-                        "name", Limiter.builder()
+                        "name", Limiters.stringLimiter()
                                 .length(10)
                                 .build()
                 )
                 .addLimiter(
-                        "address", Limiter.builder()
+                        "address", Limiters.stringLimiter()
                         .length(20)
                         .build()
                 )
@@ -104,6 +104,36 @@ public class TestPojoTesting {
         assertTrue(person.getAge() >= 0 && person.getAge() <= 100);
         assertEquals(10, person.getName().length());
         assertEquals(20, person.getAddress().length());
+    }
+
+    @Test
+    public void testSettingLimitsOnArraySubType() {
+        PersonCollection personCollection = TestPojo.builder(PersonCollection.class)
+                .addLimiter("people.name", Limiters.stringLimiter().min(1L).max(1L).build()).build();
+        assertNotNull(personCollection);
+        for (Person person : personCollection.getPeople()) {
+            assertEquals(1, person.getName().length());
+        }
+    }
+
+    @Test
+    public void testSettingExcludesOnArraySubType() {
+        PersonCollection personCollection = TestPojo.builder(PersonCollection.class)
+                .addExcludedField("people.name").build();
+        assertNotNull(personCollection);
+        for (Person person : personCollection.getPeople()) {
+            assertNull(person.getName());
+        }
+    }
+
+    @Test
+    public void testSettingPostGeneratorOnArraySubType() {
+        PersonCollection personCollection = TestPojo.builder(PersonCollection.class)
+                .addPostGenerator("people.name", "people.address", o -> o).build();
+        assertNotNull(personCollection);
+        for (Person person : personCollection.getPeople()) {
+            assertEquals(person.getAddress(), person.getName());
+        }
     }
 
     @Test
@@ -125,7 +155,7 @@ public class TestPojoTesting {
     public void testExceptionThrownWhenLimiterClassIsIncorrect() {
         Assertions.assertThrows(NoSuchFieldException.class, () -> TestPojo.builder(Person.class)
                 .addLimiter(
-                        "age.doesn'texist", Limiter.builder().build()
+                        "age.doesn'texist", Limiters.stringLimiter().build()
                 )
                 .build());
     }
@@ -135,7 +165,7 @@ public class TestPojoTesting {
         TestPojo.builder(Person.class)
                 .setWarnOnFieldNotExisting(true)
                 .addLimiter(
-                        "age.doesn'texist", Limiter.builder().build()
+                        "age.doesn'texist", Limiters.stringLimiter().build()
                 )
                 .build();
     }
@@ -207,7 +237,7 @@ public class TestPojoTesting {
     public void testLimitInnerPojoLimiters() {
         Car car = TestPojo.builder(Car.CarBuilder.class, Car::builder)
                 .addLimiter("speedometer.speed",
-                        Limiter.builder().min(0L).max(120L).build()).build().build();
+                        Limiters.numberLimiter().min(0L).max(120L).build()).build().build();
 
         assertTrue(car.getSpeedometer().getSpeed() >= 0 && car.getSpeedometer().getSpeed() <= 120);
     }
@@ -241,7 +271,7 @@ public class TestPojoTesting {
         names.add("bill");
 
         final Person person = TestPojo.builder(Person.class)
-                .addLimiter("name", Limiter.builder().potentialValues(names).build()).build();
+                .addLimiter("name", Limiters.stringLimiter().potentialValues(names).build()).build();
 
         assertTrue(person.getName().equals("kurt") || person
                         .getName().equals("bill"), "Name should be kurt or bill");

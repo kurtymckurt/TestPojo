@@ -82,7 +82,7 @@ public class TestPojoBuilder<T> {
 
         providerFunctions.put(clazz, new ProviderFunctionContainer(providerFunction, builderMethod));
 
-        if(clazzes != null && clazzes.length > 0) {
+        if(clazzes != null) {
             for (Class<?> aClass : clazzes) {
                 providerFunctions.put(aClass, new ProviderFunctionContainer(providerFunction, builderMethod));
             }
@@ -136,7 +136,7 @@ public class TestPojoBuilder<T> {
     public TestPojoBuilder<T> addExcludedFields(String fieldName, String ... fields) {
         addExcludedField(fieldName);
 
-        if(fields != null && fields.length > 0) {
+        if(fields != null) {
             for (String field : fields) {
                 addExcludedField(field);
             }
