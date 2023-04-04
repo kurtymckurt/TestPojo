@@ -1,5 +1,8 @@
 # TestPojo
 
+Currently written in Java 11 for version 3.0!
+For Java 8, you will need to use version 2.x
+
 ## Description
 This project's sole purpose is to generate pojos with data for testing within an integration testing
 framework.  
@@ -17,7 +20,7 @@ doesn't support the complex data type.
 <dependency>
   <groupId>org.kurtymckurt</groupId>
   <artifactId>TestPojo</artifactId>
-  <version>2.5</version>
+  <version>3.0</version>
 </dependency>
 ```
 
@@ -191,8 +194,8 @@ For example, what if our pojo is a person and their age should reasonably be bet
 public void realisticTest() {
     Person person = TestPojo.builder(Person.class)
     .addLimiter(
-            "age", 
-            Limiter.builder()
+            "age",
+            Limiters.stringLimiter().builder()
                 .min(1L)
                 .max(100L)
             .build())
@@ -228,7 +231,7 @@ public class TestCar {
     public void testLimitInnerPojoLimiters() {
         Car car = TestPojo.builder(Car.CarBuilder.class, Car::builder)
                 .addLimiter("speedometer.speed",
-                        Limiter.builder().min(0L).max(120L).build()).build().build();
+                        Limiters.numberLimiter().min(0L).max(120L).build()).build().build();
 
         assertTrue(car.getSpeedometer().getSpeed() >= 0 && car.getSpeedometer().getSpeed() <= 120);
     }
@@ -242,6 +245,8 @@ the limiter that will generate a string of that format.  BE AWARE, the more comp
 the regex, the longer it could take to generate.
 
 ```java
+import org.kurtymckurt.TestPojo.limiters.Limiters;
+
 @Data
 public class RegexObject {
     private String cve;
@@ -249,16 +254,16 @@ public class RegexObject {
 }
 
 RegexObject regexTestObject = TestPojo.builder(RegexObject.class)
-            .addLimiter("cve",
-                    Limiter.builder()
-                            .regex("CVE-\\d\\d\\d\\d-[0-9]{4,7}")
-                            .build())
-            .addLimiter("cwe",
-                    Limiter.builder()
-                            .regex("CWE-[0-9]{4}")
-                            .build())
-            .addProviderFunction(RegexObject::new, RegexObject.class)
-            .build();
+        .addLimiter("cve",
+                Limiters.stringLimiter()
+                    .regex("CVE-\\d\\d\\d\\d-[0-9]{4,7}")
+                    .build())
+        .addLimiter("cwe",
+                Limiters.stringLimiter()
+                .regex("CWE-[0-9]{4}")
+                .build())
+        .addProviderFunction(RegexObject::new,RegexObject.class)
+    .build();
 ```
 
 Output:
@@ -277,7 +282,7 @@ names.add("kurt");
 names.add("bill");
 
 final Person person = TestPojo.builder(Person.class)
-        .addLimiter("name", Limiter.builder().potentialValues(names).build()).build();
+        .addLimiter("name", Limiters.stringLimiter.potentialValues(names).build()).build();
 
 ```
 Here, you can see the person class will be generated with a name that's guaranteed to be either "kurt" or "bill".
@@ -300,12 +305,14 @@ This will generate a point where x is the same as y.
 If there is a problem with the name of the variable when specifying a limiter, we will fail fast.  The library will throw a NoSuchFieldException and state which class it believes should've had that field.
 
 ```java
+import org.kurtymckurt.TestPojo.limiters.Limiters;
+
 public class TestCar {
     @Test
     public void testLimitInnerPojoLimiters() {
         Car car = TestPojo.builder(Car.CarBuilder.class, Car::builder)
                 .addLimiter("speedometer.rateOfSpeed",  // incorrect field name
-                        Limiter.builder().min(0L).max(120L).build()).build().build();
+                        Limiters.numberLimiter().min(0L).max(120L).build()).build().build();
 
         assertTrue(car.getSpeedometer().getSpeed() >= 0 && car.getSpeedometer().getSpeed() <= 120);
     }
