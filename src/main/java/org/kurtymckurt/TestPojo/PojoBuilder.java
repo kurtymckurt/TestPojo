@@ -35,6 +35,10 @@ public class PojoBuilder<T> {
     private final Map<Class, Set<Field>> excludedFields;
     private final Set<Field> excludedPostGeneratorFields;
     private final Map<Field, Map<Field, PostGenerator>> postGenerators;
+    //Holds the trigger field with its instance object and the field it needs to change
+    private final Map<Field, List<TriggerTrackingInstance>> triggerMap;
+    //Holds the post generator result field with its instance object.
+    public final Map<Field, Object> resultFieldInstanceMap;
     private final PojoBuilderConfiguration configuration;
     private final RandomUtils randomUtils;
     private final boolean warnOnFieldNotExisting;  // for excluding/limiting fields
@@ -57,7 +61,9 @@ public class PojoBuilder<T> {
         this.configuration = configuration;
         this.randomUtils = configuration.getRandomUtils();
         this.warnOnFieldNotExisting = configuration.isWarnOnFieldNotExisting();
-
+        this.triggerMap = new HashMap<>();
+        this.resultFieldInstanceMap = new HashMap<>();
+        
         verifyAndBuildExcludedFieldSet(clazz, configuration.getExcludedFields());
         verifyAndBuildLimitersMap(clazz, configuration.getLimiters());
         verifyAndBuildPostGeneratorsFieldSet(clazz, configuration.getPostGenerators());
@@ -270,6 +276,7 @@ public class PojoBuilder<T> {
             log.debug("[*] attempting to fill the object {}.", instance);
             fillInstanceVariables(instance);
 
+            executePostGenerators();
 
             if(providerFunctionContainer != null) {
                 builderMethod = providerFunctionContainer.getBuilderMethod();
@@ -312,27 +319,51 @@ public class PojoBuilder<T> {
                 continue;
             } else if(excludedPostGeneratorFields.contains(f)) {
                 log.debug("[*] Skipping due to post generator. field name: {}, field: {}.", f.getName(), f.getType());
+                resultFieldInstanceMap.put(f, instance);  // track the instance for the generator field.
                 continue;
             }
             f.setAccessible(true);
             setField(instance, f);
 
-            //Now we do post generators!
-            executePostGenerators(instance, f);
+            //Now we check for post generators!
+            trackPostGenerators(instance, f);
         }
     }
 
-    private void executePostGenerators(Object instance, Field f) {
+    private void trackPostGenerators(Object instance, Field f) {
         Map<Field, PostGenerator> fieldPostGeneratorMap = this.postGenerators.get(f);
-        if(fieldPostGeneratorMap != null && !fieldPostGeneratorMap.isEmpty()) {
+        if(fieldPostGeneratorMap != null) {
             for (Map.Entry<Field, PostGenerator> fieldPostGeneratorEntry : fieldPostGeneratorMap.entrySet()) {
                 Field key = fieldPostGeneratorEntry.getKey();
-                PostGenerator postGenerator = fieldPostGeneratorEntry.getValue();
-                try {
-                    key.setAccessible(true);
-                    key.set(instance, postGenerator.generate(f.get(instance)));
-                } catch (java.lang.IllegalAccessException e) {
-                    throw new IllegalAccessException(instance.getClass(), e);
+                triggerMap.putIfAbsent(f, new ArrayList<>());
+                triggerMap.get(f).add(new TriggerTrackingInstance(instance, key));
+            }
+        }
+    }
+
+    /***
+     * Go through all the trigger fields and find the result trigger field and execute the post generators.
+     * This is overly complex because we need the instance of the trigger field and the instance of the result
+     * field to set them based on each other.
+     */
+    private void executePostGenerators() {
+        for (Map.Entry<Field, List<TriggerTrackingInstance>> fieldListEntry : triggerMap.entrySet()) {
+            Field triggerField = fieldListEntry.getKey();
+            List<TriggerTrackingInstance> trackingInstanceList = fieldListEntry.getValue();
+            for (TriggerTrackingInstance triggerTrackingInstance : trackingInstanceList) {
+                Map<Field, PostGenerator> fieldPostGeneratorMap = this.postGenerators.get(triggerField);
+                if(fieldPostGeneratorMap != null && !fieldPostGeneratorMap.isEmpty()) {
+                    for (Map.Entry<Field, PostGenerator> fieldPostGeneratorEntry : fieldPostGeneratorMap.entrySet()) {
+                        Field key = fieldPostGeneratorEntry.getKey();
+                        PostGenerator postGenerator = fieldPostGeneratorEntry.getValue();
+                        try {
+                            key.setAccessible(true);
+                            key.set(resultFieldInstanceMap.get(key),
+                                    postGenerator.generate(triggerField.get(triggerTrackingInstance.getInstance())));
+                        } catch (java.lang.IllegalAccessException e) {
+                            throw new IllegalAccessException(resultFieldInstanceMap.get(key).getClass(), e);
+                        }
+                    }
                 }
             }
         }

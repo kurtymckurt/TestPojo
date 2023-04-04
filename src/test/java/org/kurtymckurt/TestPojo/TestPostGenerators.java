@@ -18,18 +18,14 @@ public class TestPostGenerators
                         (PostGenerator<Integer, Integer>) o -> o).build();
         assertEquals(build.x, build.anotherX);
     }
-
-    // This is a case that we cannot support yet.  We cannot post generate something thats in a different level object.
-    // For example, in this test, make is in the car, but the speed is in the speedometer, therefore we cannot set the
-    // speed after we set the make.
-    //    @Test
-    //    public void testComplexPostGenerator() {
-    //        Car car = TestPojo.builder(Car.CarBuilder.class, Car::builder)
-    //                .addLimiter("make", Limiter.builder().length(1).build())
-    //                .addPostGenerator("make", "speedometer.speed",
-    //                        (PostGenerator<String, Integer>) s -> 1).build().build();
-    //        assertEquals(1, car.getSpeedometer().getSpeed());
-    //    }
+    @Test
+    public void testComplexPostGenerator() {
+        Car car = TestPojo.builder(Car.CarBuilder.class, Car::builder)
+                .addLimiter("make", Limiters.stringLimiter().length(1).build())
+                .addPostGenerator("make", "speedometer.speed",
+                        (PostGenerator<String, Integer>) String::length).build().build();
+        assertEquals(car.getMake().length(), car.getSpeedometer().getSpeed());
+    }
 
     @Test
     public void testSimplePostGenerator2() {
