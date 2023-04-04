@@ -1,24 +1,19 @@
 package org.kurtymckurt.TestPojo.util;
 
-import java.nio.ByteBuffer;
-import java.security.SecureRandom;
+import lombok.Value;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
 
+@Value
 public class RandomUtils {
 
-    private final Random random;
-    private final long seed;
+    Random random;
 
     public RandomUtils(long seed) {
-        this.seed = seed;
         random = new Random(seed);
-    }
-
-    public long getSeed() {
-        return seed;
     }
 
     /***
@@ -41,23 +36,11 @@ public class RandomUtils {
     }
 
     public Float getRandomFloatWithinRange(long min, long max) {
-        float floatMin;
-        float floatMax;
-        if(max > Float.MAX_VALUE) {
-            floatMin = Float.MAX_VALUE;
-        } else {
-            floatMin = min;
-        }
-        if(min < Float.MIN_VALUE) {
-            floatMax = Float.MIN_VALUE;
-        } else {
-            floatMax = max;
-        }
-        return (random.nextFloat() * ((floatMax - floatMin) + 1)) + floatMin;
+        return (random.nextFloat() * (((float) max - (float) min) + 1)) + (float) min;
     }
 
     public Long getRandomLongObject() {
-        return Long.valueOf(random.nextLong());
+        return random.nextLong();
     }
 
     public Long getRandomLongWithinRange(long min, long max) {
@@ -67,7 +50,7 @@ public class RandomUtils {
     public Short getRandomShortWithinRange(long min, long max) {
         if(max > Short.MAX_VALUE) max = Short.MAX_VALUE;
         if(min < Short.MIN_VALUE) min = Short.MIN_VALUE;
-        return Short.valueOf((short)((random.nextDouble() * ((max - min) + 1)) + min));
+        return (short) ((random.nextDouble() * ((max - min) + 1)) + min);
     }
 
     public byte getRandomByte() {

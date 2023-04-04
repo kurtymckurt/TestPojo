@@ -1,17 +1,16 @@
 package org.kurtymckurt.TestPojo.limiters;
 
-import lombok.Builder;
-import lombok.Value;
-
-import java.util.List;
-
-@Value
-@Builder
-public class Limiter {
-   Integer length;  // Strings, Arrays
-   Integer size;    // Collections
-   Long min;     // Numbers
-   Long max;     // Numbers
-   String regex;  //For string
-   List<String> potentialValues;
+public interface Limiter {
+   default boolean isStringLimiter() {
+      return getClass().isAssignableFrom(StringLimiter.class);
+   }
+   default boolean isCollectionLimiter() {
+      return getClass().isAssignableFrom(CollectionLimiter.class);
+   }
+   default boolean isArrayLimiter() {
+      return getClass().isAssignableFrom(ArrayLimiter.class);
+   }
+   default boolean isNumberLimiter() {
+      return getClass().isAssignableFrom(NumberLimiter.class);
+   }
 }

@@ -6,7 +6,6 @@ import lombok.Value;
 import org.kurtymckurt.TestPojo.generators.Generator;
 import org.kurtymckurt.TestPojo.generators.PostGenerator;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
-import org.kurtymckurt.TestPojo.providers.ProviderFunction;
 import org.kurtymckurt.TestPojo.providers.ProviderFunctionContainer;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
 

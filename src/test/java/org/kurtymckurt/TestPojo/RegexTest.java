@@ -2,7 +2,7 @@ package org.kurtymckurt.TestPojo;
 
 import lombok.Data;
 import org.junit.jupiter.api.Test;
-import org.kurtymckurt.TestPojo.limiters.Limiter;
+import org.kurtymckurt.TestPojo.limiters.Limiters;
 
 import java.util.regex.Pattern;
 
@@ -18,11 +18,11 @@ public class RegexTest {
         Pattern cve = Pattern.compile("CVE-\\d\\d\\d\\d-[0-9]{4,7}");
         RegexObject regexTestObject = TestPojo.builder(RegexObject.class)
                 .addLimiter("cve",
-                        Limiter.builder()
+                        Limiters.stringLimiter()
                                 .regex("CVE-\\d\\d\\d\\d-[0-9]{4,7}")
                                 .build())
                 .addLimiter("cwe",
-                        Limiter.builder()
+                        Limiters.stringLimiter()
                                 .regex("CWE-[0-9]{4}")
                                 .build())
                 .addProviderFunction(RegexObject::new, RegexObject.class)

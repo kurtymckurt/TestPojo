@@ -10,11 +10,12 @@ import org.kurtymckurt.TestPojo.generators.PostGenerator;
 import org.kurtymckurt.TestPojo.generators.collections.*;
 import org.kurtymckurt.TestPojo.generators.primatives.*;
 import org.kurtymckurt.TestPojo.generators.time.*;
+import org.kurtymckurt.TestPojo.limiters.ArrayLimiter;
 import org.kurtymckurt.TestPojo.limiters.Limiter;
 import org.kurtymckurt.TestPojo.providers.ProviderFunction;
 import org.kurtymckurt.TestPojo.providers.ProviderFunctionContainer;
+import org.kurtymckurt.TestPojo.util.ArrayNullSafeLimits;
 import org.kurtymckurt.TestPojo.util.LimiterUtils;
-import org.kurtymckurt.TestPojo.util.NullSafeLimits;
 import org.kurtymckurt.TestPojo.util.RandomUtils;
 
 import java.lang.reflect.*;
@@ -38,6 +39,12 @@ public class PojoBuilder<T> {
     private final RandomUtils randomUtils;
     private final boolean warnOnFieldNotExisting;  // for excluding/limiting fields
 
+    private static final IntegerGenerator INTEGER_GENERATOR = new IntegerGenerator();
+    private static final ShortGenerator SHORT_GENERATOR = new ShortGenerator();
+    private static final FloatGenerator FLOAT_GENERATOR = new FloatGenerator();
+    private static final DoubleGenerator DOUBLE_GENERATOR = new DoubleGenerator();
+    private static final LongGenerator LONG_GENERATOR = new LongGenerator();
+
     public PojoBuilder(PojoBuilderConfiguration configuration) {
         this.clazz = configuration.getClazz();
         this.providerFunctions = new HashMap<>();
@@ -59,6 +66,73 @@ public class PojoBuilder<T> {
         this.generators.addAll(configuration.getGenerators());
         addCoreGenerators();
 
+    }
+
+    public PojoBuilderConfiguration getConfigurationWithOnlyProvidersAndGenerators() {
+        return configuration.toBuilder().clearExcludedFields().clearLimiters().build();
+    }
+
+    public T buildObject() {
+        return buildObject(clazz);
+    }
+
+    private void verifyAndBuildExcludedFieldSet(Class clazz, Set<String> fieldsToExclude) {
+        for(String field : fieldsToExclude) {
+            String[] fieldNames = field.split("\\.");
+            List<String> fieldNameList = Arrays.stream(fieldNames).collect(Collectors.toList());
+            verifyAndBuildExcludesSetHelper(clazz, fieldNameList);
+        }
+    }
+
+    private void verifyAndBuildExcludesSetHelper(Class<?> type, List<String> fieldNames) {
+        try {
+            Field declaredField = type.getDeclaredField(fieldNames.get(0));
+            if(fieldNames.size() > 1) {
+                fieldNames.remove(0);
+                verifyAndBuildExcludesSetHelper(declaredField.getType(), fieldNames);
+            } else {
+                Set<Field> fields = excludedFields.get(type);
+                if(fields == null) {
+                    fields = new HashSet<>();
+                }
+                fields.add(declaredField);
+                excludedFields.put(type, fields);
+            }
+        } catch (java.lang.NoSuchFieldException e) {
+            if(!warnOnFieldNotExisting) {
+                throw new NoSuchFieldException(fieldNames.get(0), type, e);
+            } else {
+                log.warn("Could not find field: {} of type: {} for provided excludes.", fieldNames.get(0), type);
+            }
+        }
+    }
+
+    private void verifyAndBuildLimitersMap(Class clazz, Map<String, Limiter> limiters) {
+        Set<Map.Entry<String, Limiter>> entries =  limiters.entrySet();
+        for (Map.Entry<String, Limiter> entry : entries) {
+            String[] fieldNames = entry.getKey().split("\\.");
+            List<String> fieldNameList = Arrays.stream(fieldNames).collect(Collectors.toList());
+            verifyAndBuildLimitersMapHelper(clazz, fieldNameList, entry.getValue());
+        }
+    }
+
+    private void verifyAndBuildLimitersMapHelper(Class<?> type, List<String> fieldNames, Limiter limiter) {
+        Class<?> typeToUse = type.isArray() ? type.getComponentType() : type;
+        try {
+            Field declaredField = typeToUse.getDeclaredField(fieldNames.get(0));
+            if(fieldNames.size() > 1) {
+                fieldNames.remove(0);
+                verifyAndBuildLimitersMapHelper(declaredField.getType(), fieldNames, limiter);
+            } else {
+                limiters.put(declaredField, limiter);
+            }
+        } catch (java.lang.NoSuchFieldException e) {
+            if(!warnOnFieldNotExisting) {
+                throw new NoSuchFieldException(fieldNames.get(0), typeToUse, e);
+            }else {
+                log.warn("Could not find field: {} of type: {} for provided limiter.", fieldNames.get(0), typeToUse);
+            }
+        }
     }
 
     private void verifyAndBuildPostGeneratorsFieldSet(Class clazz, Map<String, Map<String, PostGenerator>> postGenerators) {
@@ -128,68 +202,6 @@ public class PojoBuilder<T> {
         }
     }
 
-    public PojoBuilderConfiguration getConfigurationWithOnlyProvidersAndGenerators() {
-        return configuration.toBuilder().clearExcludedFields().clearLimiters().build();
-    }
-
-    private void verifyAndBuildExcludedFieldSet(Class clazz, Set<String> fieldsToExclude) {
-        for(String field : fieldsToExclude) {
-            String[] fieldNames = field.split("\\.");
-            List<String> fieldNameList = Arrays.stream(fieldNames).collect(Collectors.toList());
-            verifyAndBuildExcludesSetHelper(clazz, fieldNameList);
-        }
-    }
-
-    private void verifyAndBuildExcludesSetHelper(Class<?> type, List<String> fieldNames) {
-        try {
-            Field declaredField = type.getDeclaredField(fieldNames.get(0));
-            if(fieldNames.size() > 1) {
-                fieldNames.remove(0);
-                verifyAndBuildExcludesSetHelper(declaredField.getType(), fieldNames);
-            } else {
-                Set<Field> fields = excludedFields.get(type);
-                if(fields == null) {
-                    fields = new HashSet<>();
-                }
-                fields.add(declaredField);
-                excludedFields.put(type, fields);
-            }
-        } catch (java.lang.NoSuchFieldException e) {
-            if(!warnOnFieldNotExisting) {
-                throw new NoSuchFieldException(fieldNames.get(0), type, e);
-            } else {
-                log.warn("Could not find field: {} of type: {} for provided excludes.", fieldNames.get(0), type);
-            }
-        }
-    }
-
-    private void verifyAndBuildLimitersMap(Class clazz, Map<String, Limiter> limiters) {
-        Set<Map.Entry<String, Limiter>> entries =  limiters.entrySet();
-        for (Map.Entry<String, Limiter> entry : entries) {
-            String[] fieldNames = entry.getKey().split("\\.");
-            List<String> fieldNameList = Arrays.stream(fieldNames).collect(Collectors.toList());
-            verifyAndBuildLimitersMapHelper(clazz, fieldNameList, entry.getValue());
-        }
-    }
-
-    private void verifyAndBuildLimitersMapHelper(Class<?> type, List<String> fieldNames, Limiter limiter) {
-        try {
-            Field declaredField = type.getDeclaredField(fieldNames.get(0));
-            if(fieldNames.size() > 1) {
-                fieldNames.remove(0);
-                verifyAndBuildLimitersMapHelper(declaredField.getType(), fieldNames, limiter);
-            } else {
-                limiters.put(declaredField, limiter);
-            }
-        } catch (java.lang.NoSuchFieldException e) {
-            if(!warnOnFieldNotExisting) {
-                throw new NoSuchFieldException(fieldNames.get(0), type, e);
-            }else {
-                log.warn("Could not find field: {} of type: {} for provided limiter.", fieldNames.get(0), type);
-            }
-        }
-    }
-
     private void addCoreGenerators() {
 
         //Primitive Objects
@@ -223,11 +235,6 @@ public class PojoBuilder<T> {
         generators.add(new OffsetDateTimeGenerator());
     }
 
-    public T buildObject() {
-        return buildObject(clazz);
-    }
-
-
     private T buildObject(Class<?> clazz) {
         //First see if the object is just one we can generate from
         //our generators.
@@ -241,13 +248,13 @@ public class PojoBuilder<T> {
         Object instance = null;
         String builderMethod = null;
         try {
-
             //check if we have a provider function
             ProviderFunctionContainer providerFunctionContainer = providerFunctions.get(clazz);
             if(providerFunctionContainer != null) {
                 ProviderFunction providerFunction = providerFunctionContainer.getProviderFunction();
-                if(providerFunction  != null)
-                instance = providerFunction.provide();
+                if(providerFunction  != null) {
+                    instance = providerFunction.provide();
+                }
             }
 
             //If we didn't find a provider, try to new it up ourselves
@@ -258,7 +265,7 @@ public class PojoBuilder<T> {
 
             log.debug("[*] created object {}.", instance);
             log.debug("[*] attempting to fill the object {}.", instance);
-            instance = fillInstanceVariables(instance);
+            fillInstanceVariables(instance);
 
 
             if(providerFunctionContainer != null) {
@@ -284,9 +291,9 @@ public class PojoBuilder<T> {
         return (T) instance;
     }
 
-    private Object fillInstanceVariables(Object instance) {
+    private void fillInstanceVariables(Object instance) {
         Field[] declaredFields = instance.getClass().getDeclaredFields();
-        if(declaredFields.length == 0) return instance;
+        if(declaredFields.length == 0) return;
 
         Set<Field> excludedForThisInstance = excludedFields.get(instance.getClass());
 
@@ -310,7 +317,6 @@ public class PojoBuilder<T> {
             //Now we do post generators!
             executePostGenerators(instance, f);
         }
-        return instance;
     }
 
     private void executePostGenerators(Object instance, Field f) {
@@ -330,23 +336,23 @@ public class PojoBuilder<T> {
     }
 
     void setField(Object instance, Field f) {
-        Class<?> type = f.getType();
+        final Class<?> type = f.getType();
         log.debug("[*] attempting to generate field name: {}, field: {}.", f.getName(), type);
         try {
 
             //Gotta try the primitives
             if (type.isAssignableFrom(Integer.TYPE)) {
-                f.setInt(instance, new IntegerGenerator().generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
+                f.setInt(instance, INTEGER_GENERATOR.generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Double.TYPE)) {
-                f.setDouble(instance, new DoubleGenerator().generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
+                f.setDouble(instance, DOUBLE_GENERATOR.generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Long.TYPE)) {
-                f.setLong(instance, new LongGenerator().generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
+                f.setLong(instance, LONG_GENERATOR.generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Float.TYPE)) {
-                f.setFloat(instance, new FloatGenerator().generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
+                f.setFloat(instance, FLOAT_GENERATOR.generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Byte.TYPE)) {
                 f.setByte(instance, randomUtils.getRandomByte());
             } else if (type.isAssignableFrom(Short.TYPE)) {
-                f.setShort(instance, new ShortGenerator().generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
+                f.setShort(instance, SHORT_GENERATOR.generate(type, f, limiters.get(f), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Boolean.TYPE)) {
                 f.setBoolean(instance, randomUtils.getRandomBoolean());
             } else if (type.isAssignableFrom(Character.TYPE)) {
@@ -356,9 +362,10 @@ public class PojoBuilder<T> {
                         type.getEnumConstants()[
                                 randomUtils.getRandomIntWithinRange(type.getEnumConstants().length)]);
             } else if(type.isArray()) {
-                Class<?> componentType = type.getComponentType();
+                final Class<?> componentType = type.getComponentType();
                 log.debug("[*] creating array of type: {}", componentType);
-                Object arr = generateArray(componentType, limiters.get(f));
+                final Limiter limiter = limiters.get(f);
+                Object arr = generateArray(componentType, LimiterUtils.getArrayLimiter(limiter));
                 f.set(instance, arr);
             } else {
 
@@ -382,25 +389,26 @@ public class PojoBuilder<T> {
         }
     }
 
-    Object generateArray(Class<?> type, Limiter limiter) {
-        NullSafeLimits nullSafeLimits = LimiterUtils.getNullSafeLimits(
+    Object generateArray(Class<?> type, ArrayLimiter limiter) {
+        ArrayNullSafeLimits nullSafeLimits = LimiterUtils.getArrayNullSafeLimits(
                 0, 10, limiter, configuration.getRandomUtils());
-        int size = nullSafeLimits.length;
-        Object arr = Array.newInstance(type, size);
+        final int size = nullSafeLimits.length;
+        final Object arr = Array.newInstance(type, size);
 
         for(int i = 0; i < size; i++) {
 
             //Primitives
             if (type.isAssignableFrom(Integer.TYPE)) {
-                Array.setInt(arr, i, new IntegerGenerator().generate(type, null, limiter, getConfigurationWithOnlyProvidersAndGenerators()));
+                Array.setInt(arr, i, INTEGER_GENERATOR.generate(type, null, LimiterUtils.fromArrayLimiter(limiter)
+                        , getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Double.TYPE)) {
-                Array.setDouble(arr, i, new DoubleGenerator().generate(type, null, limiter, getConfigurationWithOnlyProvidersAndGenerators()));
+                Array.setDouble(arr, i, DOUBLE_GENERATOR.generate(type, null, LimiterUtils.fromArrayLimiter(limiter), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Float.TYPE)) {
-                Array.setFloat(arr, i, new FloatGenerator().generate(type, null, limiter, getConfigurationWithOnlyProvidersAndGenerators()));
+                Array.setFloat(arr, i, FLOAT_GENERATOR.generate(type, null, LimiterUtils.fromArrayLimiter(limiter), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Long.TYPE)) {
-                Array.setLong(arr, i, new LongGenerator().generate(type, null, limiter, getConfigurationWithOnlyProvidersAndGenerators()));
+                Array.setLong(arr, i, LONG_GENERATOR.generate(type, null, LimiterUtils.fromArrayLimiter(limiter), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Short.TYPE)) {
-                Array.setShort(arr, i, new ShortGenerator().generate(type, null, limiter, getConfigurationWithOnlyProvidersAndGenerators()));
+                Array.setShort(arr, i, SHORT_GENERATOR.generate(type, null, LimiterUtils.fromArrayLimiter(limiter), getConfigurationWithOnlyProvidersAndGenerators()));
             } else if (type.isAssignableFrom(Byte.TYPE)) {
                 Array.setByte(arr, i, randomUtils.getRandomByte());
             } else if (type.isAssignableFrom(Character.TYPE)) {
