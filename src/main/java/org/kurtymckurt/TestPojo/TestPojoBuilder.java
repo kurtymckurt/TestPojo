@@ -1,5 +1,6 @@
 package org.kurtymckurt.TestPojo;
 
+import java.security.SecureRandom;
 import lombok.extern.slf4j.Slf4j;
 import org.kurtymckurt.TestPojo.generators.Generator;
 import org.kurtymckurt.TestPojo.generators.PostGenerator;
@@ -38,7 +39,7 @@ public class TestPojoBuilder<T> {
         addProviderFunction(providerFunction, builderMethod, clazz);
         this.fieldToLimiter = new HashMap<>();
         this.excludedFields = new HashSet<>();
-        this.seed = new Random().nextLong();
+        this.seed = new SecureRandom().nextLong();
         this.warnOnFieldNotExisting = false;
     }
 
